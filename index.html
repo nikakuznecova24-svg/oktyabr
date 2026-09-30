@@ -653,9 +653,10 @@ function migrateAll(){
   });
   for(var d2 in state.log){ var arr=state.log[d2]['h_mass']; if(Array.isArray(arr)) state.log[d2]['h_mass']=arr.map(function(v){ return ren[v]||v; }); var a2=state.log[d2]['h_prac']; if(Array.isArray(a2)) state.log[d2]['h_prac']=a2.map(function(v){ return ren[v]||v; }); }
   if(!state.tomb) state.tomb={};
-  // практика без вариантов
-  state.habits.forEach(function(h){ if(h.id==='h_prac' && h.variants){ delete h.variants; } });
-  for(var dp in state.log){ var pv=state.log[dp]['h_prac']; if(Array.isArray(pv)) state.log[dp]['h_prac']=pv.length; }
+  // варианты привычек больше не используются: убираем их совсем
+  state.habits.forEach(function(h){ if(h.variants){ delete h.variants; } });
+  for(var dp in state.log){ for(var hk in state.log[dp]){ var pv=state.log[dp][hk]; if(Array.isArray(pv)) state.log[dp][hk]=pv.length; else if(typeof pv==='string') state.log[dp][hk]=1; } }
+  for(var dq in state.days){ var pk=state.days[dq].pick; if(pk) state.days[dq].pick=pk.map(function(k){ return k.split('|')[0]; }).filter(function(k,i,a){ return a.indexOf(k)===i; }); }
   // массаж разделён на три отдельные привычки
   if(state.habits.some(function(h){ return h.id==='h_mass'; })){
     var old=state.habits.filter(function(h){ return h.id==='h_mass'; })[0], ix=state.habits.indexOf(old);
@@ -1032,8 +1033,10 @@ try{ window.addEventListener('online',function(){ syncNow(false); }); }catch(e){
 setInterval(function(){ if(!document.hidden && !modalOpen()) syncNow(false); },60000);
 
 state=load();
+var beforeMig=stable(stripForCmp(state));
 migrateAll();
 state.ui.viewDate=null;
+if(stable(stripForCmp(state))!==beforeMig) save();
 render();
 if(hasCloud()){ setSync('синхронизирую…'); syncNow(true); }
 if('serviceWorker' in navigator && /^https?:/.test(location.protocol)){ try{ navigator.serviceWorker.register('sw.js').catch(function(){}); }catch(e){} }
