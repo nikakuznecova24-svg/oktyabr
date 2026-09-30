@@ -338,12 +338,15 @@ input[type=number]{-moz-appearance:textfield}
 .funnel .fbar{height:20px;border-radius:12px;border:1.5px solid rgba(255,148,104,.5);padding:2px;box-sizing:border-box;background:rgba(255,255,255,.5) !important}
 .funnel .fbar i{border-radius:8px !important;background:linear-gradient(90deg,rgba(255,190,157,.9),rgba(255,148,104,.9)) !important}
 .flat .track .tk{top:-2px;height:20px}
+
+/* ---- v11: без подписи «октябрь», индикатор сохранения в углу ---- */
+.topbar{position:fixed !important;top:10px;right:14px;left:auto !important;padding:0 !important;margin:0 !important;max-width:none !important;z-index:6;pointer-events:none}
 </style>
 </head>
 <body data-time="morning">
 <div class="aura"><i class="a1"></i><i class="a2"></i><i class="a3"></i><i class="a4"></i></div>
 <div id="app"><noscript>чтобы платформа открылась, нужно включить javascript в браузере</noscript></div>
-<div class="topbar"><div class="brand">октябрь</div><div class="sync" id="sync"></div></div>
+<div class="topbar"><div class="sync" id="sync"></div></div>
 <nav class="nav" id="nav">
   <button data-a="nav" data-p="month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg><span>месяц</span></button>
   <button data-a="nav" data-p="week"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4" width="17" height="16" rx="3"/><path d="M3.5 9h17M9 9v11"/></svg><span>неделя</span></button>
