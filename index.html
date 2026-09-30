@@ -382,6 +382,11 @@ b,strong,h1,h2,h3{font-weight:500}
 .glowring{animation:glow 3.4s ease-in-out infinite}
 @keyframes glow{0%,100%{opacity:.35}50%{opacity:.9}}
 @media (prefers-reduced-motion:reduce){ .glowring,.check.pop{animation:none} .bar i{transition:none} }
+
+/* ---- v14: лавандовое стекло (выбрано из вариантов) ---- */
+.bar,.funnel .fbar,.flat .thin{height:16px !important;border-radius:14px !important;background:rgba(255,255,255,.5) !important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.95) !important;padding:2px !important;box-sizing:border-box}
+.bar i,.funnel .fbar i,.flat .thin i{background:linear-gradient(90deg,#e6dcff,#b9aaf5) !important;border-radius:12px !important;height:100% !important}
+.earn .bar{height:18px !important}
 </style>
 </head>
 <body data-time="morning">
