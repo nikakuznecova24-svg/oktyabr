@@ -404,6 +404,14 @@ b,strong,h1,h2,h3{font-weight:500}
 /* ---- v17: заголовок карточки и процент в одной строке ---- */
 .cardhead{align-items:baseline !important;margin-bottom:8px !important;padding:0 !important;border-top:0 !important}
 .cardhead h3{margin:0 !important}
+
+/* ---- v18: задачи мягкими плитками ---- */
+.task{display:flex;align-items:center;gap:12px;background:rgba(255,253,249,.92);border-radius:26px;padding:9px 14px 9px 14px;margin-bottom:10px;box-shadow:0 6px 18px rgba(150,130,200,.12)}
+.task .check{width:24px;height:24px;flex:0 0 24px;font-size:13px}
+.task .grow{padding:2px 0}
+.task .mini{width:32px;height:32px;flex:0 0 32px}
+.task button.star{min-width:30px}
+.card h3 + .task,.card .cardhead + .bar + .task{margin-top:10px}
 </style>
 </head>
 <body data-time="morning">
@@ -648,7 +656,7 @@ function pageToday(){
   h+='<div class="card"><h3>'+(vd===t?'задачи на сегодня':'задачи дня')+'</h3>';
   if(!list.length) h+='<div class="empty">пока пусто, добавь первую</div>';
   list.forEach(function(x){
-    h+='<div class="row" style="margin-bottom:10px"><button class="check'+(x.done?' on':'')+'" data-a="toggleDay" data-id="'+x.id+'">✓</button><div class="grow'+(x.done?' title-done':'')+'" data-a="editDay" data-id="'+x.id+'" style="cursor:pointer">'+esc(x.title)+'</div><button class="star'+(x.star?' on':'')+'" data-a="starDay" data-id="'+x.id+'" aria-label="ключевая">'+(x.star?'★':'☆')+'</button></div>';
+    h+='<div class="task"><button class="check'+(x.done?' on':'')+'" data-a="toggleDay" data-id="'+x.id+'">✓</button><div class="grow'+(x.done?' title-done':'')+'" data-a="editDay" data-id="'+x.id+'" style="cursor:pointer">'+esc(x.title)+'</div><button class="star'+(x.star?' on':'')+'" data-a="starDay" data-id="'+x.id+'" aria-label="ключевая">'+(x.star?'★':'☆')+'</button></div>';
   });
   h+='<div class="addline"><input type="text" id="newDayTask" placeholder="новая задача"><button class="plus" data-a="addDayTask" aria-label="добавить">+</button></div>';
   var prev=dayRead(addDays(vd,-1)), undone=prev.tasks.filter(function(x){ return !x.done; });
@@ -657,7 +665,7 @@ function pageToday(){
   var wk=mondayOf(vd), wt=state.tasks.filter(function(x){ return !x.done && x.scope==='week' && x.week===wk; });
   if(wt.length){
     h+='<div class="card"><h3>задачи недели</h3>';
-    wt.forEach(function(x){ h+='<div class="row" style="margin-bottom:8px"><button class="check" data-a="toggleTask" data-id="'+x.id+'">✓</button><div class="grow">'+esc(x.title)+'</div></div>'; });
+    wt.forEach(function(x){ h+='<div class="task"><button class="check" data-a="toggleTask" data-id="'+x.id+'">✓</button><div class="grow">'+esc(x.title)+'</div></div>'; });
     h+='</div>';
   }
   h+='</div><div>';
@@ -674,9 +682,9 @@ function pageToday(){
 }
 function taskRow(x){
   var q=x.target>0, done=q?(x.count>=x.target):x.done;
-  var h='<div class="habit"><div class="row"><button class="check'+(done?' on':'')+'" data-a="toggleTask" data-id="'+x.id+'">✓</button><div class="grow'+(done?' title-done':'')+'" data-a="editTask" data-id="'+x.id+'" style="cursor:pointer">'+esc(x.title)+'</div>';
+  var h='<div class="task"><button class="check'+(done?' on':'')+'" data-a="toggleTask" data-id="'+x.id+'">✓</button><div class="grow'+(done?' title-done':'')+'" data-a="editTask" data-id="'+x.id+'" style="cursor:pointer">'+esc(x.title)+'</div>';
   if(q) h+='<span class="small">'+(x.count||0)+' / '+x.target+'</span><button class="mini" data-a="taskInc" data-id="'+x.id+'" data-d="1" aria-label="плюс">+</button>';
-  return h+'</div></div>';
+  return h+'</div>';
 }
 function habitRow(hb,t){
   var n=habitDone(hb.id,COUNT_FROM,MONTH_END);
