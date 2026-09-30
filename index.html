@@ -491,6 +491,7 @@ button.star.on{color:#f0a060 !important}
 .glassbtn svg{color:#8f7be8}
 .glassbtn.done{background:rgba(255,255,255,.8);box-shadow:inset 0 0 0 1px #fff,0 0 30px 4px rgba(185,170,245,.55)}
 .glassbtn:active{transform:scale(.98)}
+.rocket{display:flex;justify-content:center;margin:0 0 2px}
 </style>
 </head>
 <body data-time="morning">
@@ -507,7 +508,7 @@ button.star.on{color:#f0a060 !important}
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1790800083';
+var BUILD = '1790800481';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['reply','ответил'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
@@ -710,6 +711,19 @@ function migrateAll(){
   }
   if(!state.ui) state.ui={page:'today',weekMon:null,viewDate:null};
   state.people.forEach(function(p){ if(p.amount==null) p.amount=0; if(!p.src) p.src='знакомые'; if(!p.hist) p.hist=[{stage:p.stage,date:todayStr()}]; });
+  // дубли задач месяца: оставляем одну, лучшую по прогрессу
+  (function(){
+    var seen={};
+    state.tasks=state.tasks.filter(function(x){
+      var k=(x.title||'').trim().toLowerCase(), sc=(x.scope||'')+'|'+(x.week||'');
+      if(!k) return true;
+      var key=k+'|'+sc, o=seen[key];
+      if(!o){ seen[key]=x; return true; }
+      var better=(x.done?2:0)+(x.count>0?1:0)+(x.week?1:0) > (o.done?2:0)+(o.count>0?1:0)+(o.week?1:0);
+      if(better){ state.tomb[o.id]={ts:Date.now(),dead:true}; seen[key]=x; var i=state.tasks.indexOf(o); if(i>-1) o.__drop=true; return true; }
+      state.tomb[x.id]={ts:Date.now(),dead:true}; return false;
+    }).filter(function(x){ return !x.__drop; });
+  })();
   state.tasks.forEach(function(x){
     if(x.target==null){
       if(/50 знаком/.test(x.title)) x.target=50; else if(/25 разговор/.test(x.title)) x.target=25; else if(/^собрать 3 демо/.test(x.title)) x.target=3;
@@ -730,7 +744,7 @@ function greeting(){ var h=new Date().getHours(); return h<5?'доброй но�
 /* ---------- страницы ---------- */
 function pageToday(){
   var t=todayStr(), vd=VD(), d=dayRead(vd), dt=pd(vd), h='';
-  h+='<div class="hero-row" style="justify-content:center;flex-direction:column;gap:8px;text-align:center"><div class="datebar" style="justify-content:center"><button class="chev" data-a="dayNav" data-d="-1" aria-label="день назад"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><div style="text-align:center;min-width:200px"><div class="hello" style="text-align:center">'+WD_FULL[dt.getDay()]+', '+dt.getDate()+' '+MONTHS_GEN[dt.getMonth()]+'</div>'+(vd===t?'':'<div class="hello-date" style="margin-top:2px;text-align:center">'+relLabel(vd,t)+'</div>')+'</div><button class="chev" data-a="dayNav" data-d="1" aria-label="день вперёд"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg></button></div>'+(vd!==t?'<button class="btn ghost" data-a="dayToday">сегодня</button>':'')+'</div>';
+  h+='<div class="rocket" aria-hidden="true"><svg viewBox="0 0 48 48" width="34" height="34"><g transform="rotate(40 24 24)"><path d="M24 4c7 5 9 14 9 22H15c0-8 2-17 9-22z" fill="#E7A1C0" stroke="#5a3f55" stroke-width="1.4" stroke-linejoin="round"/><circle cx="24" cy="19" r="4" fill="#9F86D0" stroke="#5a3f55" stroke-width="1.4"/><path d="M15 26l-6 9 8-2zM33 26l6 9-8-2z" fill="#9F86D0" stroke="#5a3f55" stroke-width="1.4" stroke-linejoin="round"/><path d="M20 26h8l-4 12z" fill="#FBEFD9" stroke="#5a3f55" stroke-width="1.4" stroke-linejoin="round"/></g></svg></div><div class="hero-row" style="justify-content:center;flex-direction:column;gap:8px;text-align:center"><div class="datebar" style="justify-content:center"><button class="chev" data-a="dayNav" data-d="-1" aria-label="день назад"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><div style="text-align:center;min-width:200px"><div class="hello" style="text-align:center">'+WD_FULL[dt.getDay()]+', '+dt.getDate()+' '+MONTHS_GEN[dt.getMonth()]+'</div>'+(vd===t?'':'<div class="hello-date" style="margin-top:2px;text-align:center">'+relLabel(vd,t)+'</div>')+'</div><button class="chev" data-a="dayNav" data-d="1" aria-label="день вперёд"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg></button></div>'+(vd!==t?'<button class="btn ghost" data-a="dayToday">сегодня</button>':'')+'</div>';
   h+='<div class="quote">'+esc(QUOTES[(dt.getDate()+dt.getMonth())%QUOTES.length])+'</div>';
   h+='<div class="stack">';
   var list=d.tasks.slice().sort(function(x,y){ return (y.star?1:0)-(x.star?1:0); });
