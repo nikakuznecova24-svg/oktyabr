@@ -443,6 +443,12 @@ button.star.on{color:#f0a060 !important}
 @media(max-width:899px){ .nav button.on{background:transparent !important} }
 .seg button.on{box-shadow:0 4px 14px rgba(150,130,220,.25)}
 .dpd.tod{box-shadow:inset 0 0 0 1.5px #8fb3f5}
+
+/* ---- v22: аккуратные стрелки без кругов ---- */
+.chev{position:relative;background:transparent;border:0;width:34px;height:34px;padding:0;display:inline-flex;align-items:center;justify-content:center;color:var(--ink-soft);flex:0 0 34px}
+.chev::before{content:"";position:absolute;inset:-6px}
+.chev:active{color:var(--ink)}
+.datebar{gap:6px}
 </style>
 </head>
 <body data-time="morning">
@@ -680,7 +686,7 @@ function greeting(){ var h=new Date().getHours(); return h<5?'доброй но�
 /* ---------- страницы ---------- */
 function pageToday(){
   var t=todayStr(), vd=VD(), d=dayRead(vd), dt=pd(vd), h='';
-  h+='<div class="hero-row"><div class="datebar"><button class="mini" data-a="dayNav" data-d="-1" aria-label="день назад">‹</button><div><div class="hello">'+WD_FULL[dt.getDay()]+', '+dt.getDate()+' '+MONTHS_GEN[dt.getMonth()]+'</div><div class="hello-date" style="margin-top:2px">'+relLabel(vd,t)+'</div></div><button class="mini" data-a="dayNav" data-d="1" aria-label="день вперёд">›</button></div>'+(vd!==t?'<button class="btn ghost" data-a="dayToday">сегодня</button>':'')+'</div>';
+  h+='<div class="hero-row"><div class="datebar"><button class="chev" data-a="dayNav" data-d="-1" aria-label="день назад"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><div><div class="hello">'+WD_FULL[dt.getDay()]+', '+dt.getDate()+' '+MONTHS_GEN[dt.getMonth()]+'</div><div class="hello-date" style="margin-top:2px">'+relLabel(vd,t)+'</div></div><button class="chev" data-a="dayNav" data-d="1" aria-label="день вперёд"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg></button></div>'+(vd!==t?'<button class="btn ghost" data-a="dayToday">сегодня</button>':'')+'</div>';
   h+='<div class="quote">'+esc(QUOTES[(dt.getDate()+dt.getMonth())%QUOTES.length])+'</div>';
   h+='<div class="cols"><div>';
   var list=d.tasks.slice().sort(function(x,y){ return (y.star?1:0)-(x.star?1:0); });
@@ -757,7 +763,7 @@ function pageMonth(){
 function pageWeek(){
   var mon=state.ui.weekMon||mondayOf(todayStr()), t=todayStr();
   var end=addDays(mon,6), a=pd(mon), b=pd(end);
-  var h='<div class="hero-row" style="justify-content:center"><div class="datebar"><button class="mini" data-a="wk" data-d="-7" aria-label="прошлая неделя">‹</button><div style="text-align:center;min-width:170px"><div class="hello" data-a="wk" data-d="0" style="cursor:pointer;text-align:center">неделя</div><div class="hello-date" style="text-align:center;margin-top:2px">'+a.getDate()+' '+MONTHS_GEN[a.getMonth()]+' — '+b.getDate()+' '+MONTHS_GEN[b.getMonth()]+'</div></div><button class="mini" data-a="wk" data-d="7" aria-label="следующая неделя">›</button></div></div>';
+  var h='<div class="hero-row" style="justify-content:center"><div class="datebar"><button class="chev" data-a="wk" data-d="-7" aria-label="прошлая неделя"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><div style="text-align:center;min-width:170px"><div class="hello" data-a="wk" data-d="0" style="cursor:pointer;text-align:center">неделя</div><div class="hello-date" style="text-align:center;margin-top:2px">'+a.getDate()+' '+MONTHS_GEN[a.getMonth()]+' — '+b.getDate()+' '+MONTHS_GEN[b.getMonth()]+'</div></div><button class="chev" data-a="wk" data-d="7" aria-label="следующая неделя"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg></button></div></div>';
   h+='<div class="week">';
   for(var i=0;i<7;i++){ var s2=addDays(mon,i); h+='<div class="wpill'+(s2===t?' today':'')+(mainDone(s2)?' done':'')+'" data-a="goDay" data-date="'+s2+'"><small>'+WD[i]+'</small><b>'+pd(s2).getDate()+'</b></div>'; }
   h+='</div>';
