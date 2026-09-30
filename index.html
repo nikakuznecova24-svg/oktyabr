@@ -701,7 +701,6 @@ function pageMonth(){
   state.habits.forEach(function(hb){ h+=habitRow(hb,t); });
   h+='<div class="addline"><input type="text" id="newHabit" placeholder="новая привычка"><input type="number" id="newHabitTarget" class="qty" inputmode="numeric" placeholder="×" aria-label="раз в месяц"><button class="plus" data-a="addHabit" aria-label="добавить">+</button></div></div>';
   h+='</div></div>';
-  h+='<div class="add-row" style="justify-content:center;margin-top:18px"><button class="btn ghost" data-a="export">скачать копию</button><label class="btn ghost" style="display:inline-flex;align-items:center;cursor:pointer">загрузить копию<input type="file" accept="application/json" id="importFile" style="display:none"></label></div>';
   return h;
 }
 function pageWeek(){
