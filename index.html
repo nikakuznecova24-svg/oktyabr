@@ -321,6 +321,16 @@ input,textarea,select{text-overflow:clip}
 .dpd{width:36px;height:36px;border-radius:50%;border:0;background:transparent;font:inherit;font-size:14px;color:var(--ink);padding:0}
 .dpd.tod{box-shadow:inset 0 0 0 1.5px #ffb08a}
 .dpd.sel{background:linear-gradient(135deg,#ffbe9d,#ff9468);color:#fff;font-weight:600}
+
+/* ---- v9: добавление одной строкой ---- */
+.addline{display:flex;align-items:center;gap:6px;margin-top:12px;background:rgba(255,253,249,.96);border:1px solid rgba(90,80,120,.12);border-radius:999px;padding:4px 4px 4px 16px}
+.addline input[type=text],.addline input[type=number]{border:0;background:transparent;box-shadow:none;border-radius:0;padding:8px 0;font-size:16px;flex:1 1 auto;min-width:0;width:auto}
+.addline input[type=number].qty{flex:0 0 46px;width:46px;text-align:center;border-left:1px solid rgba(90,80,120,.14);padding-left:6px;border-radius:0}
+.addline input:focus{box-shadow:none;border-color:transparent}
+.addline:focus-within{border-color:rgba(255,148,104,.6);box-shadow:0 0 0 3px rgba(255,148,104,.16)}
+.plus{flex:0 0 40px;width:40px;height:40px;border-radius:50%;border:0;padding:0;font-size:24px;line-height:1;color:#fff;background:linear-gradient(135deg,#ffbe9d,#ff9468)}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+input[type=number]{-moz-appearance:textfield}
 </style>
 </head>
 <body data-time="morning">
@@ -567,7 +577,7 @@ function pageToday(){
   list.forEach(function(x){
     h+='<div class="row" style="margin-bottom:10px"><button class="check'+(x.done?' on':'')+'" data-a="toggleDay" data-id="'+x.id+'">✓</button><div class="grow'+(x.done?' title-done':'')+'" data-a="editDay" data-id="'+x.id+'" style="cursor:pointer">'+esc(x.title)+'</div><button class="star'+(x.star?' on':'')+'" data-a="starDay" data-id="'+x.id+'" aria-label="ключевая">'+(x.star?'★':'☆')+'</button></div>';
   });
-  h+='<div class="add-row"><input type="text" id="newDayTask" placeholder="новая задача"><button class="btn primary" data-a="addDayTask">добавить</button></div>';
+  h+='<div class="addline"><input type="text" id="newDayTask" placeholder="новая задача"><button class="plus" data-a="addDayTask" aria-label="добавить">+</button></div>';
   var prev=dayRead(addDays(vd,-1)), undone=prev.tasks.filter(function(x){ return !x.done; });
   if(undone.length) h+='<div class="add-row"><button class="btn ghost" data-a="carry">перенести невыполненные с '+(vd===t?'вчера':shortDate(addDays(vd,-1)))+' ('+undone.length+')</button></div>';
   h+='</div>';
@@ -627,12 +637,12 @@ function pageMonth(){
   var mt=state.tasks.filter(function(x){ return x.scope!=='week'; });
   if(!mt.length) h+='<div class="empty">пока пусто</div>';
   mt.forEach(function(x){ h+=taskRow(x); });
-  h+='<div class="add-row"><input type="text" id="newTask" placeholder="новая цель или задача"><input type="number" id="newTaskTarget" inputmode="numeric" placeholder="сколько раз" style="max-width:104px"><button class="btn primary" data-a="addTask">добавить</button></div></div>';
+  h+='<div class="addline"><input type="text" id="newTask" placeholder="новая цель или задача"><input type="number" id="newTaskTarget" class="qty" inputmode="numeric" placeholder="×" aria-label="сколько раз"><button class="plus" data-a="addTask" aria-label="добавить">+</button></div></div>';
   h+='</div><div>';
   var op=overallPct(function(hb){ return habitDone(hb.id,COUNT_FROM,MONTH_END); },function(hb){ return hb.target; });
   h+='<div class="card"><h3>состояние</h3><div class="row" style="margin-bottom:4px"><div class="grow">сделано за месяц</div><b style="font-weight:600;font-size:20px">'+op+'%</b></div><div class="bar" style="height:12px;margin-bottom:14px"><i style="width:'+op+'%"></i></div>';
   state.habits.forEach(function(hb){ h+=habitRow(hb,t); });
-  h+='<div class="add-row"><input type="text" id="newHabit" placeholder="новая привычка"><input type="number" id="newHabitTarget" inputmode="numeric" placeholder="раз" style="max-width:84px"><button class="btn primary" data-a="addHabit">добавить</button></div></div>';
+  h+='<div class="addline"><input type="text" id="newHabit" placeholder="новая привычка"><input type="number" id="newHabitTarget" class="qty" inputmode="numeric" placeholder="×" aria-label="раз в месяц"><button class="plus" data-a="addHabit" aria-label="добавить">+</button></div></div>';
   h+='</div></div>';
   h+='<div class="add-row" style="justify-content:center;margin-top:18px"><button class="btn ghost" data-a="export">скачать копию</button><label class="btn ghost" style="display:inline-flex;align-items:center;cursor:pointer">загрузить копию<input type="file" accept="application/json" id="importFile" style="display:none"></label></div>';
   return h;
@@ -649,7 +659,7 @@ function pageWeek(){
   h+='<div class="card"><h3>задачи недели</h3>';
   if(!wt.length) h+='<div class="empty">пока пусто, добавь первую</div>';
   wt.forEach(function(x){ h+=taskRow(x); });
-  h+='<div class="add-row"><input type="text" id="newWeekTask" placeholder="новая задача на неделю"><input type="number" id="newWeekTarget" inputmode="numeric" placeholder="сколько раз" style="max-width:104px"><button class="btn primary" data-a="addWeekTask">добавить</button></div></div>';
+  h+='<div class="addline"><input type="text" id="newWeekTask" placeholder="новая задача на неделю"><input type="number" id="newWeekTarget" class="qty" inputmode="numeric" placeholder="×" aria-label="сколько раз"><button class="plus" data-a="addWeekTask" aria-label="добавить">+</button></div></div>';
   h+='</div><div>';
   var wp=overallPct(function(hb){ return habitDone(hb.id,mon,end); },weekTarget);
   h+='<div class="card"><h3>состояние за неделю</h3><div class="row" style="margin-bottom:4px"><div class="grow">сделано за неделю</div><b style="font-weight:600;font-size:20px">'+wp+'%</b></div><div class="bar" style="height:12px;margin-bottom:6px"><i style="width:'+wp+'%"></i></div>';
@@ -710,7 +720,7 @@ function pagePeople(){
     });
     h+='</div>';
   }
-  h+='<div class="card"><h3>новый человек</h3><div class="add-row" style="margin-top:0"><input type="text" id="pName" placeholder="имя"><input type="text" id="pNote" placeholder="чем занимается"></div><div class="add-row"><select id="pSrc">'+SOURCES.map(function(x){ return '<option>'+esc(x)+'</option>'; }).join('')+'</select><button class="btn primary" data-a="addPerson">добавить</button></div>';
+  h+='<div class="card"><h3>новый человек</h3><div class="addline" style="margin-top:0"><input type="text" id="pName" placeholder="имя нового человека"><button class="plus" data-a="addPerson" aria-label="добавить">+</button></div>';
   h+='<div class="add-row"><button class="btn ghost" data-a="bulkPeople">добавить списком</button></div></div>';
   h+='</div><div>';
   STAGES.forEach(function(st,si){
