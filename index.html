@@ -309,6 +309,18 @@ input,textarea,select{text-overflow:clip}
 /* ---- v7: полосы прогресса: один оттенок, заметная дорожка ---- */
 .bar,.flat .thin,.funnel .fbar{background:rgba(95,88,120,.13) !important}
 .bar i,.flat .thin i,.funnel .fbar i{background:linear-gradient(90deg,#ffbe9d,#ff9468) !important;box-shadow:none !important}
+
+/* ---- v8: свой календарь ---- */
+.dp{position:relative}
+.dpbtn{width:100%;text-align:left;font:inherit;font-size:16px;border:1px solid var(--line);background:rgba(255,253,249,.95);border-radius:14px;padding:11px 14px;color:var(--ink)}
+.dpcal{margin-top:8px;background:#fff;border-radius:20px;padding:12px;box-shadow:0 10px 28px rgba(120,100,170,.18);border:1px solid rgba(150,130,200,.15)}
+.dpcal[hidden]{display:none}
+.dph{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}.dph b{font-weight:600;font-size:15px}
+.dpg{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;justify-items:center}
+.dpg .wd{font-size:11px;color:var(--ink-soft);padding:4px 0}
+.dpd{width:36px;height:36px;border-radius:50%;border:0;background:transparent;font:inherit;font-size:14px;color:var(--ink);padding:0}
+.dpd.tod{box-shadow:inset 0 0 0 1.5px #ffb08a}
+.dpd.sel{background:linear-gradient(135deg,#ffbe9d,#ff9468);color:#fff;font-weight:600}
 </style>
 </head>
 <body data-time="morning">
@@ -602,7 +614,7 @@ function pageMonth(){
   fig+='<g fill="#cdc9dc" opacity=".75" style="filter:blur(1.4px)">'+shape+'</g></svg>';
   var figc='<svg viewBox="0 0 100 150" width="100%" height="100%" aria-hidden="true"><defs><linearGradient id="fg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f79b68"/><stop offset=".55" stop-color="#f4a4a0"/><stop offset="1" stop-color="#8f9ce6"/></linearGradient><radialGradient id="orb2"><stop offset="0" stop-color="#ffe9b0"/><stop offset="1" stop-color="#ffd08a"/></radialGradient></defs><g fill="url(#fg2)" style="filter:blur(1.4px)">'+shape+'</g><circle cx="63" cy="76" r="13" fill="url(#orb2)" style="filter:blur(2px)"/></svg>';
   h+='<div class="mascotrow"><div class="mascot"><div class="m0">'+fig+'</div><div class="m1" style="clip-path:inset('+((1-prog)*100).toFixed(1)+'% 0 0 0)">'+figc+'</div></div><div class="mascotmain">';
-  var names=['минимум','хорошо','мечта'], nextIdx=-1; L.forEach(function(v,i){ if(nextIdx<0 && e<v) nextIdx=i; });
+  var names=['минимум','оптимум','максимум'], nextIdx=-1; L.forEach(function(v,i){ if(nextIdx<0 && e<v) nextIdx=i; });
   h+='<div class="flat"><div class="giant">'+money(e)+'</div><div class="small" style="margin-top:6px">заработано из '+money(T)+' · '+Math.round(pct)+'%'+(nextIdx>=0?' · до «'+names[nextIdx]+'» осталось '+Math.round((L[nextIdx]-e)/1000)+' тыс.':'')+'</div>';
   h+='<div class="track"><div class="thin"><i style="width:'+pct+'%"></i></div>';
   L.forEach(function(v){ h+='<span class="tk" style="left:'+(v/T*100)+'%"></span>'; });
@@ -717,6 +729,20 @@ function pagePeople(){
 }
 
 /* ---------- модалка ---------- */
+var MONTHS_NOM=['январь','февраль','март','апрель','май','июнь','июль','август','сентябрь','октябрь','ноябрь','декабрь'];
+function fmtLong(d){ var x=pd(d); return x.getDate()+' '+MONTHS_GEN[x.getMonth()]+' '+x.getFullYear(); }
+function dpHTML(name,value,clearable){
+  return '<div class="dp"><input type="hidden" name="'+name+'" value="'+esc(value||'')+'"><button type="button" class="dpbtn" data-a="dpToggle">'+(value?fmtLong(value):'выбрать дату')+'</button><div class="dpcal" hidden data-clear="'+(clearable?'1':'')+'"></div></div>';
+}
+function dpRender(dp,ym){
+  var cal=dp.querySelector('.dpcal'), val=dp.querySelector('input').value, t=todayStr();
+  var y=+ym.slice(0,4), m=+ym.slice(5,7)-1, off=(new Date(y,m,1).getDay()+6)%7, days=new Date(y,m+1,0).getDate();
+  var h='<div class="dph"><button type="button" class="mini" data-a="dpPrev" aria-label="назад">‹</button><b>'+MONTHS_NOM[m]+' '+y+'</b><button type="button" class="mini" data-a="dpNext" aria-label="вперёд">›</button></div><div class="dpg">'+WD.map(function(w){ return '<span class="wd">'+w+'</span>'; }).join('');
+  for(var i=0;i<off;i++) h+='<span></span>';
+  for(var d=1;d<=days;d++){ var s2=y+'-'+p2(m+1)+'-'+p2(d); h+='<button type="button" class="dpd'+(s2===val?' sel':'')+(s2===t?' tod':'')+'" data-a="dpPick" data-date="'+s2+'">'+d+'</button>'; }
+  h+='</div>'+(cal.getAttribute('data-clear')?'<button type="button" class="btn ghost" data-a="dpClear" style="margin-top:8px;min-height:34px;padding:6px 14px">без даты</button>':'');
+  cal.innerHTML=h; cal.setAttribute('data-ym',ym);
+}
 function modalOpen(){ return !!document.getElementById('modal'); }
 function closeModal(){ var m=document.getElementById('modal'); if(m) m.parentNode.removeChild(m); }
 function openModal(html,onSubmit){
@@ -730,7 +756,7 @@ function openModal(html,onSubmit){
   var first=f.querySelector('input,textarea'); if(first&&first.focus) first.focus();
 }
 function payModal(personName){
-  openModal('<h3>оплата</h3><input type="number" name="amount" inputmode="decimal" placeholder="сумма, ₽" required><input type="text" name="note" placeholder="от кого и за что" value="'+esc(personName||'')+'"><input type="date" name="date" value="'+todayStr()+'"><div class="two"><button type="button" class="btn ghost" id="mc">отмена</button><button class="btn primary">сохранить</button></div>',
+  openModal('<h3>оплата</h3><input type="number" name="amount" inputmode="decimal" placeholder="сумма, ₽" required><input type="text" name="note" placeholder="от кого и за что" value="'+esc(personName||'')+'">'+dpHTML('date',todayStr())+'<div class="two"><button type="button" class="btn ghost" id="mc">отмена</button><button class="btn primary">сохранить</button></div>',
    function(fd){ var a=parseFloat(fd.amount); if(!a||a<=0) return; state.payments.push({id:uid(),date:fd.date||todayStr(),amount:a,note:fd.note||''}); save(); closeModal(); render(); });
   document.getElementById('mc').addEventListener('click',closeModal);
 }
@@ -739,12 +765,12 @@ function walletModal(){
   var rows=list.length?list.map(function(p){ return '<div class="row" data-a="editPay" data-id="'+p.id+'" style="cursor:pointer;margin-bottom:12px"><div class="grow"><b style="font-weight:600">'+money(p.amount)+'</b><div class="small">'+esc(p.note||'без пометки')+' · '+esc(p.date.split('-').reverse().join('.'))+'</div></div></div>'; }).join(''):'<div class="empty">оплат пока нет</div>';
   openModal('<h3>кошелёк · '+money(earned())+'</h3><div style="max-height:52vh;overflow:auto">'+rows+'</div><div class="two"><button type="button" class="btn ghost" id="mc">закрыть</button><button type="button" class="btn primary" id="mpay">+ оплата</button></div>',function(){});
   document.getElementById('mc').addEventListener('click',closeModal);
-  document.getElementById('mpay').addEventListener('click',function(){ closeModal(); openModal('<h3>оплата</h3><input type="number" name="amount" inputmode="decimal" placeholder="сумма, ₽" required><input type="text" name="note" placeholder="от кого и за что"><input type="date" name="date" value="'+todayStr()+'"><div class="two"><button type="button" class="btn ghost" id="mc">назад</button><button class="btn primary">сохранить</button></div>',
+  document.getElementById('mpay').addEventListener('click',function(){ closeModal(); openModal('<h3>оплата</h3><input type="number" name="amount" inputmode="decimal" placeholder="сумма, ₽" required><input type="text" name="note" placeholder="от кого и за что">'+dpHTML('date',todayStr())+'<div class="two"><button type="button" class="btn ghost" id="mc">назад</button><button class="btn primary">сохранить</button></div>',
     function(fd){ var a=parseFloat(fd.amount); if(!a||a<=0) return; state.payments.push({id:uid(),date:fd.date||todayStr(),amount:a,note:fd.note||''}); save(); walletModal(); render(); });
     document.getElementById('mc').addEventListener('click',walletModal); });
 }
 function payEditModal(p){
-  openModal('<h3>оплата</h3><input type="number" name="amount" inputmode="decimal" placeholder="сумма, ₽" value="'+esc(p.amount)+'" required><input type="text" name="note" placeholder="от кого и за что" value="'+esc(p.note||'')+'"><input type="date" name="date" value="'+esc(p.date)+'"><div class="two"><button type="button" class="btn ghost" id="md">удалить</button><button class="btn primary">сохранить</button></div><button type="button" class="btn ghost" id="mc">назад</button>',
+  openModal('<h3>оплата</h3><input type="number" name="amount" inputmode="decimal" placeholder="сумма, ₽" value="'+esc(p.amount)+'" required><input type="text" name="note" placeholder="от кого и за что" value="'+esc(p.note||'')+'">'+dpHTML('date',p.date)+'<div class="two"><button type="button" class="btn ghost" id="md">удалить</button><button class="btn primary">сохранить</button></div><button type="button" class="btn ghost" id="mc">назад</button>',
    function(fd){ var a=parseFloat(fd.amount); if(!a||a<=0) return; p.amount=a; p.note=fd.note||''; p.date=fd.date||p.date; save(); walletModal(); render(); });
   document.getElementById('mc').addEventListener('click',walletModal);
   document.getElementById('md').addEventListener('click',function(){ closeModal(); withUndo('оплата удалена',function(){ tomb(p.id); state.payments=state.payments.filter(function(q){ return q.id!==p.id; }); }); render(); });
@@ -768,7 +794,7 @@ function habitModal(hb){
   document.getElementById('md').addEventListener('click',function(){ closeModal(); withUndo('привычка удалена',function(){ tomb(hb.id); state.habits=state.habits.filter(function(q){ return q!==hb; }); for(var d in state.log){ delete state.log[d][hb.id]; } }); render(); });
 }
 function personModal(p){
-  openModal('<h3>человек</h3><input type="text" name="name" placeholder="имя" value="'+esc(p.name)+'" required><input type="text" name="note" placeholder="чем занимается, что нужно" value="'+esc(p.note)+'"><select name="src">'+SOURCES.map(function(x){ return '<option'+(x===p.src?' selected':'')+'>'+esc(x)+'</option>'; }).join('')+'</select><input type="text" name="next" placeholder="следующий шаг" value="'+esc(p.next)+'"><input type="date" name="nextDate" value="'+esc(p.nextDate||'')+'"><input type="number" name="amount" inputmode="decimal" placeholder="сумма проекта, ₽" value="'+(p.amount?esc(p.amount):'')+'"><div class="two"><button type="button" class="btn ghost" id="md">удалить</button><button class="btn primary">сохранить</button></div><button type="button" class="btn ghost" id="mc">отмена</button>',
+  openModal('<h3>человек</h3><input type="text" name="name" placeholder="имя" value="'+esc(p.name)+'" required><input type="text" name="note" placeholder="чем занимается, что нужно" value="'+esc(p.note)+'"><select name="src">'+SOURCES.map(function(x){ return '<option'+(x===p.src?' selected':'')+'>'+esc(x)+'</option>'; }).join('')+'</select><input type="text" name="next" placeholder="следующий шаг" value="'+esc(p.next)+'">'+dpHTML('nextDate',p.nextDate||'',true)+'<input type="number" name="amount" inputmode="decimal" placeholder="сумма проекта, ₽" value="'+(p.amount?esc(p.amount):'')+'"><div class="two"><button type="button" class="btn ghost" id="md">удалить</button><button class="btn primary">сохранить</button></div><button type="button" class="btn ghost" id="mc">отмена</button>',
    function(fd){ p.name=fd.name; p.note=fd.note; p.src=fd.src||p.src; p.next=fd.next; p.nextDate=fd.nextDate||''; p.amount=parseFloat(fd.amount)||0; save(); closeModal(); render(); });
   document.getElementById('mc').addEventListener('click',closeModal);
   document.getElementById('md').addEventListener('click',function(){ closeModal(); withUndo('человек удалён',function(){ tomb(p.id); state.people=state.people.filter(function(q){ return q.id!==p.id; }); }); render(); });
@@ -798,6 +824,14 @@ function rerender(){ window.__keepY=window.pageYOffset; render(); }
 document.addEventListener('click',function(e){
   var el=e.target.closest?e.target.closest('[data-a]'):null; if(!el) return;
   var a=el.getAttribute('data-a'), id=el.getAttribute('data-id'), t=todayStr(), vd=VD();
+  if(a==='dpToggle'||a==='dpPrev'||a==='dpNext'||a==='dpPick'||a==='dpClear'){
+    var dp=el.closest('.dp'); if(!dp) return; var cal=dp.querySelector('.dpcal'), inp=dp.querySelector('input'), btn=dp.querySelector('.dpbtn');
+    if(a==='dpToggle'){ if(cal.hasAttribute('hidden')){ var base=inp.value||todayStr(); dpRender(dp,base.slice(0,7)); cal.removeAttribute('hidden'); } else cal.setAttribute('hidden',''); }
+    else if(a==='dpPrev'||a==='dpNext'){ var ym=cal.getAttribute('data-ym'), y0=+ym.slice(0,4), m0=+ym.slice(5,7)-1+(a==='dpNext'?1:-1); var dd0=new Date(y0,m0,1); dpRender(dp,dd0.getFullYear()+'-'+p2(dd0.getMonth()+1)); }
+    else if(a==='dpPick'){ inp.value=el.getAttribute('data-date'); btn.textContent=fmtLong(inp.value); cal.setAttribute('hidden',''); }
+    else { inp.value=''; btn.textContent='выбрать дату'; cal.setAttribute('hidden',''); }
+    return;
+  }
   function task(){ return state.tasks.filter(function(x){ return x.id===id; })[0]; }
   function dtask(){ return day(vd).tasks.filter(function(q){ return q.id===id; })[0]; }
   function person(){ return state.people.filter(function(q){ return q.id===id; })[0]; }
