@@ -715,10 +715,11 @@ function pageWeek(){
   var mon=state.ui.weekMon||mondayOf(todayStr()), t=todayStr();
   var end=addDays(mon,6), a=pd(mon), b=pd(end);
   var h='<div class="hero-row"><div><div class="hello">неделя</div><div class="hello-date">'+a.getDate()+' '+MONTHS_GEN[a.getMonth()]+' — '+b.getDate()+' '+MONTHS_GEN[b.getMonth()]+'</div></div></div>';
-  h+='<div class="row" style="justify-content:center;margin-bottom:12px"><button class="btn ghost" data-a="wk" data-d="-7">← назад</button><button class="btn ghost" data-a="wk" data-d="0">эта неделя</button><button class="btn ghost" data-a="wk" data-d="7">вперёд →</button></div>';
   h+='<div class="week">';
   for(var i=0;i<7;i++){ var s2=addDays(mon,i); h+='<div class="wpill'+(s2===t?' today':'')+(mainDone(s2)?' done':'')+'" data-a="goDay" data-date="'+s2+'"><small>'+WD[i]+'</small><b>'+pd(s2).getDate()+'</b></div>'; }
-  h+='</div><div class="cols"><div>';
+  h+='</div>';
+  h+='<div class="row" style="justify-content:center;margin:0 0 16px"><button class="btn ghost" data-a="wk" data-d="-7">← назад</button><button class="btn ghost" data-a="wk" data-d="0">эта неделя</button><button class="btn ghost" data-a="wk" data-d="7">вперёд →</button></div>';
+  h+='<div class="cols"><div>';
   var wt=state.tasks.filter(function(x){ return x.scope==='week' && x.week===mon; });
   h+='<div class="card"><h3>задачи недели</h3>';
   if(!wt.length) h+='<div class="empty">пока пусто, добавь первую</div>';
