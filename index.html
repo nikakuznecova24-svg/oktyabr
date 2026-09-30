@@ -387,6 +387,11 @@ b,strong,h1,h2,h3{font-weight:500}
 .bar,.funnel .fbar,.flat .thin{height:16px !important;border-radius:14px !important;background:rgba(255,255,255,.5) !important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.95) !important;padding:2px !important;box-sizing:border-box}
 .bar i,.funnel .fbar i,.flat .thin i{background:linear-gradient(90deg,#e6dcff,#b9aaf5) !important;border-radius:12px !important;height:100% !important}
 .earn .bar{height:18px !important}
+
+/* ---- v15: активный пункт меню виден на ноутбуке ---- */
+.nav button.on{color:var(--ink) !important;background:rgba(190,178,250,.35) !important}
+.nav button.on svg{stroke:#7f6be0}
+@media(max-width:899px){ .nav button.on{background:transparent !important} }
 </style>
 </head>
 <body data-time="morning">
