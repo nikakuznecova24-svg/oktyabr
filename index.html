@@ -452,6 +452,19 @@ button.star.on{color:#f0a060 !important}
 
 /* ---- v23: «сегодня»: заголовок и цитата по центру ---- */
 .quote{text-align:center !important;margin-left:auto;margin-right:auto;max-width:560px}
+
+/* ---- v24: меню круглыми стеклянными пузырями (вариант В) ---- */
+.nav{background:transparent !important;border:0 !important;box-shadow:none !important;padding:0 !important;gap:14px !important;display:flex !important}
+.nav button,.nav button.on{width:54px;height:54px;border-radius:50% !important;padding:0 !important;justify-content:center;align-items:center;display:inline-flex;flex-direction:row;
+  background:rgba(255,253,249,.82) !important;color:var(--ink-soft) !important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.95),0 8px 20px rgba(150,130,200,.18)}
+.nav button span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.nav button svg{width:24px;height:24px;flex:0 0 24px}
+.nav button.on{color:var(--ink) !important;box-shadow:inset 0 0 0 1px #fff,0 0 22px 4px rgba(185,170,245,.65) !important}
+.nav button.on svg{stroke:#7f6be0}
+@media(max-width:899px){
+  .nav{left:50% !important;right:auto !important;transform:translateX(-50%) !important;bottom:calc(14px + env(safe-area-inset-bottom)) !important;width:auto !important;grid-template-columns:none !important}
+  #app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
+}
 </style>
 </head>
 <body data-time="morning">
@@ -459,10 +472,10 @@ button.star.on{color:#f0a060 !important}
 <div id="app"><noscript>чтобы платформа открылась, нужно включить javascript в браузере</noscript></div>
 <div class="topbar"><div class="sync" id="sync"></div></div>
 <nav class="nav" id="nav">
-  <button data-a="nav" data-p="month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg><span>месяц</span></button>
-  <button data-a="nav" data-p="week"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4" width="17" height="16" rx="3"/><path d="M3.5 9h17M9 9v11"/></svg><span>неделя</span></button>
-  <button data-a="nav" data-p="today"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8.2 12.3l2.6 2.6 5-5.4"/></svg><span>сегодня</span></button>
-  <button data-a="nav" data-p="people"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="9" r="3.2"/><path d="M3.5 19c.6-3.3 3-5 5.5-5s4.9 1.7 5.5 5"/><circle cx="17" cy="10" r="2.4"/><path d="M15.5 14.4c2.4-.4 4.4 1 5 4.1"/></svg><span>люди</span></button>
+  <button data-a="nav" data-p="month" aria-label="месяц" title="месяц"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg><span>месяц</span></button>
+  <button data-a="nav" data-p="week" aria-label="неделя" title="неделя"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4" width="17" height="16" rx="3"/><path d="M3.5 9h17M9 9v11"/></svg><span>неделя</span></button>
+  <button data-a="nav" data-p="today" aria-label="сегодня" title="сегодня"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8.2 12.3l2.6 2.6 5-5.4"/></svg><span>сегодня</span></button>
+  <button data-a="nav" data-p="people" aria-label="люди" title="люди"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="9" r="3.2"/><path d="M3.5 19c.6-3.3 3-5 5.5-5s4.9 1.7 5.5 5"/><circle cx="17" cy="10" r="2.4"/><path d="M15.5 14.4c2.4-.4 4.4 1 5 4.1"/></svg><span>люди</span></button>
 </nav>
 <script>
 (function(){
