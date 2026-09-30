@@ -357,7 +357,7 @@ b,strong,h1,h2,h3{font-weight:500}
 .person{border:0;background:rgba(255,253,249,.9)}
 .mv5{row-gap:10px}
 /* блок «заработано» */
-.earn{margin-bottom:18px;padding:4px 2px}
+.earn{margin-bottom:18px;padding:22px 22px 18px}
 .earn .giant{font-size:38px !important}
 .earntop{display:flex;align-items:center;gap:12px;margin-bottom:14px}
 .ball{position:relative;flex:0 0 46px;width:46px;height:69px}
@@ -671,9 +671,8 @@ function pageMonth(){
   var fig='<svg viewBox="0 0 100 150" width="100%" height="100%" aria-hidden="true"><circle cx="50" cy="75" r="46" fill="#cdc9dc" opacity=".7" style="filter:blur(1.5px)"/></svg>';
   var figc='<svg viewBox="0 0 100 150" width="100%" height="100%" aria-hidden="true"><defs><linearGradient id="fg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9cfff"/><stop offset="1" stop-color="#9fb0f0"/></linearGradient><clipPath id="wv"><path d="M0 '+(wy+4).toFixed(1)+' Q25 '+(wy-4).toFixed(1)+' 50 '+(wy+4).toFixed(1)+' T100 '+(wy+4).toFixed(1)+' V150 H0Z"/></clipPath></defs><g clip-path="url(#wv)"><circle cx="50" cy="75" r="46" fill="url(#fg2)" style="filter:blur(1.5px)"/></g><circle class="glowring" cx="50" cy="75" r="46" fill="none" stroke="#cfc6ff" stroke-width="3" opacity="'+(prog*0.85).toFixed(2)+'" style="filter:blur(3px)"/></svg>';
   var nextIdx=-1; L.forEach(function(v,i){ if(nextIdx<0 && e<v) nextIdx=i; });
-  h+='<div class="earn"><div class="earntop"><div class="grow"><div class="giant">'+money(e)+'</div><div class="small" style="margin-top:6px">из '+money(T)+' · '+Math.round(pct)+'%</div></div><div class="ball"><div class="m0">'+fig+'</div><div class="m1">'+figc+'</div></div></div>';
+  h+='<div class="card earn"><div class="earntop"><div class="grow"><div class="giant">'+money(e)+'</div><div class="small" style="margin-top:6px">из '+money(T)+' · '+Math.round(pct)+'%</div></div><div class="ball"><div class="m0">'+fig+'</div><div class="m1">'+figc+'</div></div></div>';
   h+='<div class="barwrap"><div class="bar"><i style="width:'+pct+'%"></i></div>';
-  L.forEach(function(v){ h+='<b class="gdot'+(e>=v?' on':'')+'" style="left:'+(v/T*100)+'%"></b>'; });
   h+='</div><div class="gnums">';
   L.forEach(function(v,i){ h+='<span style="left:'+(v/T*100)+'%;transform:'+(i===L.length-1?'translateX(-100%)':'translateX(-50%)')+'">'+Math.round(v/1000)+'</span>'; });
   h+='</div>';
