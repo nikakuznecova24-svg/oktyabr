@@ -757,8 +757,7 @@ function pageMonth(){
 function pageWeek(){
   var mon=state.ui.weekMon||mondayOf(todayStr()), t=todayStr();
   var end=addDays(mon,6), a=pd(mon), b=pd(end);
-  var h='<div class="hero-row" style="justify-content:center;text-align:center"><div><div class="hello" style="text-align:center">неделя</div><div class="hello-date" style="text-align:center">'+a.getDate()+' '+MONTHS_GEN[a.getMonth()]+' — '+b.getDate()+' '+MONTHS_GEN[b.getMonth()]+'</div></div></div>';
-  h+='<div class="row" style="justify-content:center;margin:0 0 14px"><button class="btn ghost" data-a="wk" data-d="-7">← назад</button><button class="btn ghost" data-a="wk" data-d="0">эта неделя</button><button class="btn ghost" data-a="wk" data-d="7">вперёд →</button></div>';
+  var h='<div class="hero-row" style="justify-content:center"><div class="datebar"><button class="mini" data-a="wk" data-d="-7" aria-label="прошлая неделя">‹</button><div style="text-align:center;min-width:170px"><div class="hello" data-a="wk" data-d="0" style="cursor:pointer;text-align:center">неделя</div><div class="hello-date" style="text-align:center;margin-top:2px">'+a.getDate()+' '+MONTHS_GEN[a.getMonth()]+' — '+b.getDate()+' '+MONTHS_GEN[b.getMonth()]+'</div></div><button class="mini" data-a="wk" data-d="7" aria-label="следующая неделя">›</button></div></div>';
   h+='<div class="week">';
   for(var i=0;i<7;i++){ var s2=addDays(mon,i); h+='<div class="wpill'+(s2===t?' today':'')+(mainDone(s2)?' done':'')+'" data-a="goDay" data-date="'+s2+'"><small>'+WD[i]+'</small><b>'+pd(s2).getDate()+'</b></div>'; }
   h+='</div>';
