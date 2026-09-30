@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#fbf4e8">
+<link rel="preload" href="fonts/lato-light.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/lato-bold.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -412,6 +414,20 @@ b,strong,h1,h2,h3{font-weight:500}
 .task .mini{width:32px;height:32px;flex:0 0 32px}
 .task button.star{min-width:30px}
 .card h3 + .task,.card .cardhead + .bar + .task{margin-top:10px}
+
+/* ---- v19: шрифты Lato Light и Lato Bold (Onest только для знака рубля) ---- */
+@font-face{font-family:'Lato';font-weight:300;font-style:normal;src:url(fonts/lato-light.woff2) format('woff2');font-display:swap}
+@font-face{font-family:'Lato';font-weight:700;font-style:normal;src:url(fonts/lato-bold.woff2) format('woff2');font-display:swap}
+body,button,input,textarea,select{font-family:'Lato','Onest',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif !important}
+body{font-weight:300;font-size:17px}
+.small,.hello-date,.empty,.lbl,.stage-tag,.gnums span,.mv5 .hd,.task .grow,.grow,input,textarea,select,.dpbtn,.flat .small{font-weight:300}
+.hello,.earn .giant,.tile b,.sum .tile b,.card h3,.cardhead h3,b,strong,h1,h2,h3,.btn,.nav button,.seg button,.badge,.dph b,.dpd.sel,.plus,.mini{font-weight:700 !important}
+[style*="font-weight:500"],[style*="font-weight:600"],[style*="font-weight:700"]{font-weight:700 !important}
+.giant,.earn .giant{font-weight:700 !important}
+.card h3,.cardhead h3{font-size:14px !important}
+.small,.hello-date,.empty,.lbl,.gnums span{font-size:14px !important}
+.nav button{font-size:11px}
+input::placeholder,textarea::placeholder{font-weight:300}
 </style>
 </head>
 <body data-time="morning">
