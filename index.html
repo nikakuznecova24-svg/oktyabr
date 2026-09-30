@@ -152,6 +152,12 @@ button.star.on{color:#e6a64c;text-shadow:0 0 12px rgba(255,255,255,.95)}
 .pick-list label{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(90,80,120,.1);font-size:15px}
 .pick-list input{width:auto}
 .mini{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:rgba(255,253,249,.9);padding:0;font-size:18px;line-height:1;flex:0 0 30px}
+.flat{padding:6px 4px 18px}
+.flat .giant{font-size:clamp(40px,11vw,64px);font-weight:600;line-height:1.05}
+.flat .thin{height:6px;border-radius:6px;background:rgba(95,88,120,.15);margin:16px 0 14px;overflow:hidden}
+.flat .thin i{display:block;height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:6px}
+.flat .ms{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--ink-soft)}
+.flat .ms b{display:block;color:var(--ink);font-size:16px;font-weight:600}
 noscript{display:block;position:relative;z-index:2;padding:40px 20px;text-align:center}
 
 /* ---- v2: читаемость, две колонки, понятная шапка ---- */
@@ -431,11 +437,10 @@ function pageMonth(){
   var t=todayStr();
   var h='<div class="hero-row"><div><div class="hello">месяц</div></div></div>';
   var e=earned(), L=state.goal.levels, T=state.goal.target, pct=Math.min(100,e/T*100);
-  h+='<div class="card hero"><div class="of">заработано</div><div class="big">'+money(e)+'</div><div class="of">из '+money(T)+'</div>';
-  h+='<div class="bar" style="height:12px;margin:16px 0 4px"><i style="width:'+pct+'%"></i></div><div class="ticks">';
-  L.forEach(function(v){ h+='<span style="left:'+(v/T*100)+'%">'+Math.round(v/1000)+' тыс.</span>'; });
-  h+='</div><div class="small">минимум 250 · хорошо 350 · мечта 500</div>';
-  h+='<div class="add-row" style="justify-content:center"><button class="btn primary" data-a="addPay">+ оплата</button>'+(state.payments.length?'<button class="btn ghost" data-a="undoPay">отменить последнюю</button>':'')+'</div></div>';
+  var names=['минимум','хорошо','мечта'], nextIdx=-1; L.forEach(function(v,i){ if(nextIdx<0 && e<v) nextIdx=i; });
+  h+='<div class="flat"><div class="giant">'+money(e)+'</div><div class="small" style="margin-top:6px">заработано из '+money(T)+' · '+Math.round(pct)+'%</div><div class="thin"><i style="width:'+pct+'%"></i></div><div class="ms">';
+  L.forEach(function(v,i){ var reached=e>=v; h+='<div style="'+(i===2?'text-align:right':(i===1?'text-align:center':''))+'"><b>'+Math.round(v/1000)+' тыс.'+(reached?' ✓':'')+'</b>'+names[i]+(i===nextIdx?' · осталось '+Math.round((v-e)/1000)+' тыс.':'')+'</div>'; });
+  h+='</div><div class="add-row"><button class="btn primary" data-a="addPay">+ оплата</button>'+(state.payments.length?'<button class="btn ghost" data-a="undoPay">отменить последнюю</button>':'')+'</div></div>';
   h+='<div class="cols"><div>';
   h+='<div class="card"><h3>цели и задачи по вайбкодингу</h3>';
   var mt=state.tasks.filter(function(x){ return x.scope!=='week'; });
