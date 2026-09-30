@@ -392,6 +392,14 @@ b,strong,h1,h2,h3{font-weight:500}
 .nav button.on{color:var(--ink) !important;background:rgba(190,178,250,.35) !important}
 .nav button.on svg{stroke:#7f6be0}
 @media(max-width:899px){ .nav button.on{background:transparent !important} }
+
+/* ---- v16: голубой вместо лавандового ---- */
+.bar i,.funnel .fbar i,.flat .thin i{background:linear-gradient(90deg,#d6e6ff,#8fb3f5) !important}
+.nav button.on{background:rgba(143,179,245,.3) !important}
+.nav button.on svg{stroke:#4f83e0}
+@media(max-width:899px){ .nav button.on{background:transparent !important} }
+.seg button.on{box-shadow:0 4px 14px rgba(120,160,240,.25)}
+.dpd.tod{box-shadow:inset 0 0 0 1.5px #8fb3f5}
 </style>
 </head>
 <body data-time="morning">
@@ -679,7 +687,7 @@ function pageMonth(){
   var tasksP=tk.length?tsum/tk.length:0, habP=overallPct(function(hb){ return habitDone(hb.id,COUNT_FROM,MONTH_END); },function(hb){ return hb.target; })/100, incP=Math.min(1,e/T);
   var prog=Math.max(0,Math.min(1,(tasksP+habP+incP)/3)), wy=150-150*prog;
   var fig='<svg viewBox="0 0 100 150" width="100%" height="100%" aria-hidden="true"><circle cx="50" cy="75" r="46" fill="#cdc9dc" opacity=".7" style="filter:blur(1.5px)"/></svg>';
-  var figc='<svg viewBox="0 0 100 150" width="100%" height="100%" aria-hidden="true"><defs><linearGradient id="fg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9cfff"/><stop offset="1" stop-color="#9fb0f0"/></linearGradient><clipPath id="wv"><path d="M0 '+(wy+4).toFixed(1)+' Q25 '+(wy-4).toFixed(1)+' 50 '+(wy+4).toFixed(1)+' T100 '+(wy+4).toFixed(1)+' V150 H0Z"/></clipPath></defs><g clip-path="url(#wv)"><circle cx="50" cy="75" r="46" fill="url(#fg2)" style="filter:blur(1.5px)"/></g><circle class="glowring" cx="50" cy="75" r="46" fill="none" stroke="#cfc6ff" stroke-width="3" opacity="'+(prog*0.85).toFixed(2)+'" style="filter:blur(3px)"/></svg>';
+  var figc='<svg viewBox="0 0 100 150" width="100%" height="100%" aria-hidden="true"><defs><linearGradient id="fg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d6e6ff"/><stop offset="1" stop-color="#8fb3f5"/></linearGradient><clipPath id="wv"><path d="M0 '+(wy+4).toFixed(1)+' Q25 '+(wy-4).toFixed(1)+' 50 '+(wy+4).toFixed(1)+' T100 '+(wy+4).toFixed(1)+' V150 H0Z"/></clipPath></defs><g clip-path="url(#wv)"><circle cx="50" cy="75" r="46" fill="url(#fg2)" style="filter:blur(1.5px)"/></g><circle class="glowring" cx="50" cy="75" r="46" fill="none" stroke="#bcd6ff" stroke-width="3" opacity="'+(prog*0.85).toFixed(2)+'" style="filter:blur(3px)"/></svg>';
   var nextIdx=-1; L.forEach(function(v,i){ if(nextIdx<0 && e<v) nextIdx=i; });
   h+='<div class="card earn"><div class="earntop"><div class="grow"><div class="giant">'+money(e)+'</div><div class="small" style="margin-top:6px">из '+money(T)+' · '+Math.round(pct)+'%</div></div><div class="ball"><div class="m0">'+fig+'</div><div class="m1">'+figc+'</div></div></div>';
   h+='<div class="barwrap"><div class="bar"><i style="width:'+pct+'%"></i></div>';
