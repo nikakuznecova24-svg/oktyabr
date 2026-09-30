@@ -1,8 +1,9 @@
-// офлайн-оболочка: сначала сеть (чтобы правки доходили сразу), при отсутствии сети берём из кэша
-var CACHE = 'oktyabr-v3';
+// открывается сразу из кэша и обновляется в фоне; новая версия подхватывается через version.json
+var CACHE = 'oktyabr-v4';
+var SHELL = ['./', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png', 'fonts/lato-light.woff2', 'fonts/lato-bold.woff2'];
 self.addEventListener('install', function (e) {
   self.skipWaiting();
-  e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(['./', 'manifest.webmanifest', 'icon-192.png']); }));
+  e.waitUntil(caches.open(CACHE).then(function (c) { return Promise.all(SHELL.map(function (u) { return c.add(new Request(u, { cache: 'reload' })).catch(function () {}); })); }));
 });
 self.addEventListener('activate', function (e) {
   e.waitUntil(caches.keys().then(function (keys) {
@@ -14,11 +15,14 @@ self.addEventListener('fetch', function (e) {
   if (r.method !== 'GET') return;
   var u = new URL(r.url);
   if (u.origin !== location.origin) return;
-  e.respondWith(fetch(r, { cache: 'no-store' }).then(function (res) {
-    var copy = res.clone();
-    caches.open(CACHE).then(function (c) { c.put(r, copy); });
-    return res;
-  }).catch(function () {
-    return caches.match(r).then(function (m) { return m || caches.match('./'); });
+  if (u.pathname.indexOf('version.json') !== -1) return;
+  e.respondWith(caches.open(CACHE).then(function (c) {
+    return c.match(r, { ignoreSearch: true }).then(function (hit) {
+      var net = fetch(r, { cache: 'no-store' }).then(function (res) {
+        if (res && res.ok) c.put(r, res.clone());
+        return res;
+      }).catch(function () { return hit || c.match('./'); });
+      return hit || net;
+    });
   }));
 });

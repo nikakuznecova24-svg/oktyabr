@@ -11,6 +11,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
+<style>html{background:#f6e9ee}</style>
 <meta name="apple-mobile-web-app-title" content="запуск">
 <title>запуск в космос</title>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
@@ -526,7 +527,7 @@ button.star.on{color:#f0a060 !important}
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1790800582';
+var BUILD = '1790800684';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['reply','ответил'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
@@ -580,6 +581,7 @@ function load(){
   return defaults();
 }
 var cloudTimer=null, syncBusy=false, syncMsg='', dirty=false, knownRemote=0;
+function buzz(p){ try{ if(navigator.vibrate) navigator.vibrate(p); }catch(e){} }
 function setSync(t){ syncMsg=t; var el=document.getElementById('sync'); if(el) el.textContent=t; }
 function save(local){
   state.updatedAt=Date.now();
@@ -1043,6 +1045,7 @@ function rerender(){ window.__keepY=window.pageYOffset; render(); }
 document.addEventListener('click',function(e){
   var el=e.target.closest?e.target.closest('[data-a]'):null; if(!el) return;
   var a=el.getAttribute('data-a'), id=el.getAttribute('data-id'), t=todayStr(), vd=VD();
+  if(/^(toggleDay|toggleTask|toggleItem|taskInc|habPlus)$/.test(a)) buzz(14); else if(a==='finishDay') buzz([18,50,30]);
   if(a==='dpToggle'||a==='dpPrev'||a==='dpNext'||a==='dpPick'||a==='dpClear'){
     var dp=el.closest('.dp'); if(!dp) return; var cal=dp.querySelector('.dpcal'), inp=dp.querySelector('input'), btn=dp.querySelector('.dpbtn');
     if(a==='dpToggle'){ if(cal.hasAttribute('hidden')){ var base=inp.value||todayStr(); dpRender(dp,base.slice(0,7)); cal.removeAttribute('hidden'); } else cal.setAttribute('hidden',''); }
@@ -1121,12 +1124,13 @@ function checkVersion(force){
   fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){ return r.json(); }).then(function(d){
     if(d && d.v && d.v!==BUILD){
       var typing=document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName);
-      if(force || (!modalOpen() && !typing)){ try{ location.reload(); }catch(e){} }
+      var seen=''; try{ seen=sessionStorage.getItem('okt-rl')||''; }catch(e){}
+      if(seen!==d.v && (force || (!modalOpen() && !typing))){ try{ sessionStorage.setItem('okt-rl',d.v); }catch(e){} try{ location.reload(); }catch(e){} }
     }
   }).catch(function(){});
 }
 document.addEventListener('visibilitychange',function(){ if(!document.hidden){ checkVersion(true); syncNow(false); render(); } });
-try{ window.addEventListener('online',function(){ syncNow(false); }); }catch(e){}
+try{ window.addEventListener('online',function(){ setSync('сеть вернулась, отправляю'); syncNow(false); }); window.addEventListener('offline',function(){ setSync('без сети: всё сохраняется на телефоне'); }); }catch(e){}
 setInterval(function(){ if(!document.hidden && !modalOpen()){ syncNow(false); checkVersion(false); } },60000);
 
 
