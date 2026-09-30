@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#c9b6dc">
 <title>октябрь</title>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500&display=swap"></noscript>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap"></noscript>
 <style>
 :root{
   --ink:#3b3550; --ink-soft:#6f6888; --glass:rgba(255,255,255,.62); --glass-strong:rgba(255,255,255,.82);
@@ -19,7 +19,7 @@ body[data-time="evening"]{ --top:#8fa4d8; --mid:#b4aad3; --bot:#f0c3cd; }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
 body{
-  margin:0; font-family:'Jost',-apple-system,BlinkMacSystemFont,'Helvetica Neue','Segoe UI Light','Segoe UI',Roboto,Arial,sans-serif; font-weight:300; color:var(--ink);
+  margin:0; font-family:'Onest',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif; font-weight:400; color:var(--ink);
   min-height:100vh; min-height:100dvh; background:linear-gradient(180deg,var(--top) 0%,var(--mid) 55%,var(--bot) 100%) fixed;
   overflow-x:clip;
 }
@@ -133,12 +133,54 @@ button{font:inherit;font-weight:400;color:var(--ink);cursor:pointer}
 .add-row{display:flex;gap:8px;margin-top:10px}
 .empty{color:var(--ink-soft);font-size:14px;padding:6px 0}
 noscript{display:block;position:relative;z-index:2;padding:40px 20px;text-align:center}
+
+/* ---- v2: читаемость, две колонки, понятная шапка ---- */
+:root{ --ink:#2e2942; --ink-soft:#5a5474; --glass:rgba(255,255,255,.74); --glass-strong:rgba(255,255,255,.92); }
+body{font-weight:400}
+h1,h2,h3{font-weight:600}
+.topbar{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;padding:20px 18px 0;max-width:640px;margin:0 auto}
+.topbar .brand{margin:0;text-align:left;padding:0;font-size:13px;font-weight:600;letter-spacing:.42em}
+.sync{position:static;font-size:11px;color:var(--ink-soft)}
+.moon{top:22px;left:auto;right:26px;margin-left:0;width:56px;height:56px}
+body:not([data-time="evening"]) .moon{width:52px;height:52px;margin-left:0}
+.moon::before{box-shadow:inset -17px 5px 0 0 #fff}
+.hero-row{display:flex;justify-content:space-between;align-items:center;gap:14px;margin:20px 0 6px}
+.hello{font-size:26px;font-weight:600;text-align:left;margin:0;line-height:1.15}
+.hello-date{text-align:left;font-size:14px;margin:4px 0 0;color:var(--ink-soft)}
+.daybadge{background:var(--glass-strong);border:1px solid var(--line);border-radius:20px;padding:10px 16px;text-align:center;min-width:104px;box-shadow:0 8px 24px rgba(120,100,160,.14)}
+.daybadge b{display:block;font-size:32px;font-weight:600;line-height:1;color:var(--ink)}
+.daybadge span{display:block;font-size:12px;color:var(--ink-soft);margin-top:4px}
+.quote{text-align:left;font-size:16px;margin:8px 0 18px;color:var(--ink-soft)}
+.card h3{font-size:12px;font-weight:600;letter-spacing:.14em;color:var(--ink-soft)}
+.help{font-size:13px;color:var(--ink-soft);margin:-4px 0 12px;line-height:1.4}
+.tl-head{display:flex;align-items:center;gap:14px;margin-left:-44px;margin-bottom:12px;min-height:40px}
+.tl-head .fab{left:0;margin:0;flex:0 0 40px}
+.tl-head .tl-title{font-size:17px;font-weight:600}
+.tl-head .tl-sub{font-size:13px;color:var(--ink-soft);line-height:1.35}
+.slot .kind{font-size:11px;font-weight:600;letter-spacing:.14em;color:var(--ink-soft)}
+.tile b{font-size:34px;font-weight:600}
+.tile .lbl{font-size:13px;font-weight:500;color:var(--ink)}
+.tile .goal{font-size:11px;color:var(--ink-soft);margin-top:2px}
+.small{color:var(--ink-soft)}
+.hero .big{font-weight:600;font-size:40px}
+.dot.done{font-weight:600}
+input::placeholder,textarea::placeholder{color:#8b85a3}
+.cols{display:grid;gap:0}
+@media(min-width:900px){
+  #app,#app.wide{max-width:1120px;padding-top:86px}
+  .cols{grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+  .nav{top:16px;bottom:auto}
+  .topbar{position:fixed;left:26px;right:26px;top:24px;z-index:6;margin:0;max-width:none;padding:0;pointer-events:none}
+  .topbar .sync{pointer-events:auto}
+  .hero-row{margin-top:8px}
+}
+@media(max-width:899px){ .topbar{padding-right:84px} #app{padding-top:8px} }
 </style>
 </head>
 <body data-time="morning">
 <div class="sky"><div class="moon"></div><div class="cloud c1"></div><div class="cloud c2"></div><div class="cloud c3"></div><div class="cloud c4"></div></div>
-<div class="sync" id="sync"></div>
 <div id="app"><noscript>чтобы платформа открылась, нужно включить javascript в браузере</noscript></div>
+<div class="topbar"><div class="brand">октябрь</div><div class="sync" id="sync"></div></div>
 <nav class="nav" id="nav">
   <button data-a="nav" data-p="month">месяц</button>
   <button data-a="nav" data-p="week">неделя</button>
@@ -245,39 +287,38 @@ function greeting(){ var h=new Date().getHours(); return h<5?'доброй но�
 
 /* ---------- страницы ---------- */
 function pageToday(){
-  var t=todayStr(), d=dayRead(t), dt=pd(t), h='';
-  h+='<div class="brand">октябрь</div>';
-  h+='<div class="hello">'+greeting()+', '+esc(state.name)+'</div>';
-  h+='<div class="hello-date">'+WD_FULL[dt.getDay()]+', '+dt.getDate()+' '+MONTHS_GEN[dt.getMonth()]+'</div>';
-  var n=diffDays(t,state.startDate);
-  h+='<div class="dayno"><b>'+(n>=0?('день '+(n+1)):('до старта '+(-n)+' дн.'))+'</b><span>'+(n>=0?'твой путь продолжается':'мягкий предстарт')+'</span></div>';
+  var t=todayStr(), d=dayRead(t), dt=pd(t), n=diffDays(t,state.startDate), h='';
+  h+='<div class="hero-row"><div><div class="hello">'+greeting()+', '+esc(state.name)+'</div><div class="hello-date">'+WD_FULL[dt.getDay()]+', '+dt.getDate()+' '+MONTHS_GEN[dt.getMonth()]+'</div></div>';
+  h+='<div class="daybadge"><b>'+(n>=0?(n+1):(-n))+'</b><span>'+(n>=0?'день пути':'дн. до старта')+'</span></div></div>';
   h+='<div class="quote">'+esc(QUOTES[(pd(t).getDate()+pd(t).getMonth())%QUOTES.length])+'</div>';
-  h+='<div class="timeline"><button class="fab" data-a="focusTop" aria-label="добавить">+</button>';
+  h+='<div class="cols"><div>';
+  // левая колонка: три дела
+  h+='<div class="timeline"><div class="tl-head"><button class="fab" data-a="focusTop" aria-label="добавить">+</button><div><div class="tl-title">три дела на сегодня</div><div class="tl-sub">главное двигает к деньгам, второе ему помогает, третье для тебя. сделала главное, значит день выигран</div></div></div>';
   for(var i=0;i<3;i++){
     var it=d.top[i];
     h+='<div class="card slot"><span class="node"></span><div class="kind">'+KINDS[i]+'</div>';
     if(it){
       h+='<div class="row"><button class="check'+(it.done?' on':'')+'" data-a="toggleTop" data-i="'+i+'">✓</button><div class="grow'+(it.done?' title-done':'')+'">'+esc(it.title)+'</div><button class="x" data-a="delTop" data-i="'+i+'" aria-label="убрать">×</button></div>';
     }else{
-      h+='<input type="text" data-f="top" data-i="'+i+'" id="top'+i+'" placeholder="'+(i===0?'что сегодня самое важное?':i===1?'что поддержит главную?':'что для тебя и тела?')+'">';
+      h+='<input type="text" data-f="top" data-i="'+i+'" id="top'+i+'" placeholder="'+(i===0?'например: отправить 10 сообщений':i===1?'например: собрать демо для одного человека':'например: йога и нормальный ужин')+'">';
     }
     h+='</div>';
   }
   h+='</div>';
-  // из недели
   var wk=mondayOf(t), wt=state.tasks.filter(function(x){ return !x.done && (x.day===t || (x.week===wk && !x.day)); });
   if(wt.length){
     h+='<div class="card"><h3>из недели и месяца</h3>';
     wt.forEach(function(x){ h+='<div class="row" style="margin-bottom:8px"><button class="check" data-a="toggleTask" data-id="'+x.id+'">✓</button><div class="grow">'+esc(x.title)+'</div>'+(x.day===t?'':'<button class="chip" data-a="taskToday" data-id="'+x.id+'">на сегодня</button>')+'</div>'; });
     h+='</div>';
   }
-  // счётчики
-  var C=d.counters, labels=[['wrote','сообщения','10'],['reply','ответы',''],['talk','разговоры',''],['offer','предложения','']];
-  h+='<div class="card"><h3>продажи сегодня</h3><div class="counters">';
-  labels.forEach(function(l){ h+='<div class="tile"><div class="lbl">'+l[1]+(l[2]?' · цель '+l[2]:'')+'</div><b>'+(C[l[0]]||0)+'</b><div class="pm"><button data-a="cnt" data-k="'+l[0]+'" data-d="-1" aria-label="минус">−</button><button data-a="cnt" data-k="'+l[0]+'" data-d="1" aria-label="плюс">+</button></div></div>'; });
-  h+='</div><div class="add-row"><button class="btn primary" data-a="addPay">+ оплата</button><span class="small" style="align-self:center">заработано: '+money(earned())+'</span></div></div>';
-  // состояние
-  h+='<div class="card"><h3>состояние</h3>';
+  h+='<div class="card"><h3>итог дня</h3><div class="small" style="margin-bottom:6px">что получилось сегодня</div><textarea data-f="win" placeholder="одна-две строки">'+esc(d.win)+'</textarea><div class="small" style="margin:10px 0 6px">что было страшно или трудно</div><textarea data-f="fear" placeholder="можно честно">'+esc(d.fear)+'</textarea></div>';
+  h+='</div><div>';
+  // правая колонка: продажи и состояние
+  var C=d.counters, labels=[['wrote','сообщения','цель 10'],['reply','ответы',''],['talk','разговоры',''],['offer','предложения','']];
+  h+='<div class="card"><h3>продажи сегодня</h3><div class="help">нажимай «+», когда что-то сделала: написала человеку, получила ответ, провела разговор, отправила предложение</div><div class="counters">';
+  labels.forEach(function(l){ h+='<div class="tile"><div class="lbl">'+l[1]+'</div><b>'+(C[l[0]]||0)+'</b><div class="goal">'+(l[2]||'&nbsp;')+'</div><div class="pm"><button data-a="cnt" data-k="'+l[0]+'" data-d="-1" aria-label="минус">−</button><button data-a="cnt" data-k="'+l[0]+'" data-d="1" aria-label="плюс">+</button></div></div>'; });
+  h+='</div><div class="add-row"><button class="btn primary" data-a="addPay">+ оплата</button><span class="small" style="align-self:center">заработано за месяц: '+money(earned())+'</span></div></div>';
+  h+='<div class="card"><h3>состояние</h3><div class="help">отметь, что сделала сегодня. справа сколько уже за месяц и какая цель</div>';
   var lg=state.log[t]||{};
   state.habits.forEach(function(hb){
     var on=!!lg[hb.id], open=state.ui.pick===hb.id;
@@ -285,13 +326,11 @@ function pageToday(){
     if(open&&hb.variants){ h+='<div class="chips">'+hb.variants.map(function(v){ return '<button class="chip" data-a="variant" data-id="'+hb.id+'" data-v="'+esc(v)+'">'+esc(v)+'</button>'; }).join('')+'</div>'; }
     h+='</div>';
   });
-  h+='</div>';
-  // итог
-  h+='<div class="card"><h3>итог дня</h3><div class="small" style="margin-bottom:6px">что получилось</div><textarea data-f="win" placeholder="одна-две строки">'+esc(d.win)+'</textarea><div class="small" style="margin:10px 0 6px">что было страшно или трудно</div><textarea data-f="fear" placeholder="можно честно">'+esc(d.fear)+'</textarea></div>';
+  h+='</div></div></div>';
   return h;
 }
 function pageMonth(){
-  var h='<div class="brand">октябрь</div><div class="brand-sub">цели и путь месяца</div>';
+  var h='<div class="hero-row"><div><div class="hello">месяц</div><div class="hello-date">октябрь: цели, путь и рутина</div></div></div><div class="cols"><div>';
   var e=earned(), L=state.goal.levels, T=state.goal.target, pct=Math.min(100,e/T*100);
   h+='<div class="card hero"><div class="of">заработано</div><div class="big">'+money(e)+'</div><div class="of">из '+money(T)+'</div>';
   h+='<div class="bar" style="height:10px;margin:14px 0 4px"><i style="width:'+pct+'%"></i></div><div class="ticks">';
@@ -303,6 +342,7 @@ function pageMonth(){
   for(var i=0;i<off;i++) h+='<div class="dot empty"></div>';
   for(var k=1;k<=days;k++){ var s='2026-10-'+p2(k); h+='<div class="dot'+(mainDone(s)?' done':'')+(s===t?' today':'')+(s===state.startDate?' start':'')+'">'+k+'</div>'; }
   h+='</div><div class="small" style="margin-top:10px">светится день, когда сделана главная задача. пунктиром отмечен старт, 5 октября</div></div>';
+  h+='</div><div>';
   // задачи
   h+='<div class="card"><h3>цели и задачи месяца</h3>';
   if(!state.tasks.length) h+='<div class="empty">пока пусто</div>';
@@ -326,16 +366,17 @@ function pageMonth(){
   if(!state.payments.length) h+='<div class="empty">первая оплата ещё впереди</div>';
   state.payments.slice().reverse().forEach(function(p){ h+='<div class="row" style="margin-bottom:8px"><div class="grow">'+money(p.amount)+' <span class="small">· '+esc(p.note||'')+' · '+esc(p.date)+'</span></div><button class="x" data-a="delPay" data-id="'+p.id+'" aria-label="удалить">×</button></div>'; });
   h+='<div class="add-row"><button class="btn primary" data-a="addPay">+ оплата</button></div></div>';
+  h+='</div></div>';
   return h;
 }
 function pageWeek(){
   var mon=state.ui.weekMon||mondayOf(todayStr()), t=todayStr();
   var end=addDays(mon,6), a=pd(mon), b=pd(end);
-  var h='<div class="brand">неделя</div><div class="brand-sub">'+a.getDate()+' '+MONTHS_GEN[a.getMonth()]+' — '+b.getDate()+' '+MONTHS_GEN[b.getMonth()]+'</div>';
+  var h='<div class="hero-row"><div><div class="hello">неделя</div><div class="hello-date">'+a.getDate()+' '+MONTHS_GEN[a.getMonth()]+' — '+b.getDate()+' '+MONTHS_GEN[b.getMonth()]+'</div></div></div>';
   h+='<div class="row" style="justify-content:center;margin-bottom:12px"><button class="btn ghost" data-a="wk" data-d="-7">← назад</button><button class="btn ghost" data-a="wk" data-d="0">эта неделя</button><button class="btn ghost" data-a="wk" data-d="7">вперёд →</button></div>';
   h+='<div class="week">';
   for(var i=0;i<7;i++){ var s=addDays(mon,i); h+='<div class="wpill'+(s===t?' today':'')+(mainDone(s)?' done':'')+'"><small>'+WD[i]+'</small><b>'+pd(s).getDate()+'</b></div>'; }
-  h+='</div>';
+  h+='</div><div class="cols"><div>';
   var wt=state.tasks.filter(function(x){ return x.week===mon; });
   h+='<div class="card"><h3>задачи недели</h3>';
   if(!wt.length) h+='<div class="empty">пока пусто. возьми что-то из месяца ниже</div>';
@@ -343,14 +384,16 @@ function pageWeek(){
   h+='</div>';
   var rest=state.tasks.filter(function(x){ return !x.done && x.week!==mon; });
   if(rest.length){ h+='<div class="card"><h3>взять из месяца</h3>'; rest.forEach(function(x){ h+='<div class="row" style="margin-bottom:8px"><div class="grow">'+esc(x.title)+'</div><button class="chip" data-a="taskWeek" data-id="'+x.id+'">в неделю</button></div>'; }); h+='</div>'; }
+  h+='</div><div>';
   var tot={wrote:0,reply:0,talk:0,offer:0};
   for(var k=0;k<7;k++){ var dd=state.days[addDays(mon,k)]; if(dd) for(var key in tot) tot[key]+=(dd.counters[key]||0); }
   h+='<div class="card"><h3>продажи за неделю</h3><div class="counters">'+[['wrote','сообщения'],['reply','ответы'],['talk','разговоры'],['offer','предложения']].map(function(l){ return '<div class="tile"><div class="lbl">'+l[1]+'</div><b>'+tot[l[0]]+'</b></div>'; }).join('')+'</div></div>';
   h+='<div class="card"><h3>состояние за неделю</h3>'+state.habits.map(function(hb){ return '<div class="row" style="margin-bottom:6px"><div class="grow">'+esc(hb.name)+'</div><span class="small">'+habitDone(hb.id,mon,end)+' из 7 дней</span></div>'; }).join('')+'</div>';
+  h+='</div></div>';
   return h;
 }
 function pagePeople(){
-  var h='<div class="brand">люди</div><div class="brand-sub">от первого сообщения до оплаты</div>';
+  var h='<div class="hero-row"><div><div class="hello">люди</div><div class="hello-date">от первого сообщения до оплаты. стрелки двигают человека дальше</div></div></div>';
   h+='<div class="card"><div class="add-row" style="margin-top:0"><input type="text" id="pName" placeholder="имя"><input type="text" id="pNote" placeholder="чем занимается"><button class="btn primary" data-a="addPerson">добавить</button></div></div>';
   h+='<div class="board">';
   STAGES.forEach(function(st,si){
