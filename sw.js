@@ -1,5 +1,5 @@
 // офлайн-оболочка: сначала сеть (чтобы правки доходили сразу), при отсутствии сети берём из кэша
-var CACHE = 'oktyabr-v2';
+var CACHE = 'oktyabr-v3';
 self.addEventListener('install', function (e) {
   self.skipWaiting();
   e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(['./', 'manifest.webmanifest', 'icon-192.png']); }));
@@ -14,7 +14,7 @@ self.addEventListener('fetch', function (e) {
   if (r.method !== 'GET') return;
   var u = new URL(r.url);
   if (u.origin !== location.origin) return;
-  e.respondWith(fetch(r).then(function (res) {
+  e.respondWith(fetch(r, { cache: 'no-store' }).then(function (res) {
     var copy = res.clone();
     caches.open(CACHE).then(function (c) { c.put(r, copy); });
     return res;

@@ -487,6 +487,7 @@ button.star.on{color:#f0a060 !important}
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
+var BUILD = '1790788756';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['reply','ответил'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
@@ -1059,9 +1060,18 @@ document.addEventListener('keydown',function(e){
   if(e.key==='Enter'&&map[id]){ e.preventDefault(); var b=document.querySelector('[data-a="'+map[id]+'"]'); if(b) b.click(); }
   if(e.key==='Escape') closeModal();
 });
-document.addEventListener('visibilitychange',function(){ if(!document.hidden){ syncNow(false); render(); } });
+function checkVersion(force){
+  if(BUILD.indexOf('__')===0 || typeof fetch!=='function') return;
+  fetch('version.json?t='+Date.now(),{cache:'no-store'}).then(function(r){ return r.json(); }).then(function(d){
+    if(d && d.v && d.v!==BUILD){
+      var typing=document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName);
+      if(force || (!modalOpen() && !typing)){ try{ location.reload(); }catch(e){} }
+    }
+  }).catch(function(){});
+}
+document.addEventListener('visibilitychange',function(){ if(!document.hidden){ checkVersion(true); syncNow(false); render(); } });
 try{ window.addEventListener('online',function(){ syncNow(false); }); }catch(e){}
-setInterval(function(){ if(!document.hidden && !modalOpen()) syncNow(false); },60000);
+setInterval(function(){ if(!document.hidden && !modalOpen()){ syncNow(false); checkVersion(false); } },60000);
 
 state=load();
 var beforeMig=stable(stripForCmp(state));
@@ -1069,8 +1079,9 @@ migrateAll();
 state.ui.viewDate=null;
 if(stable(stripForCmp(state))!==beforeMig) save();
 render();
+checkVersion(false);
 if(hasCloud()){ setSync('синхронизирую…'); syncNow(true); }
-if('serviceWorker' in navigator && /^https?:/.test(location.protocol)){ try{ navigator.serviceWorker.register('sw.js').catch(function(){}); }catch(e){} }
+if('serviceWorker' in navigator && /^https?:/.test(location.protocol)){ try{ navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).catch(function(){}); }catch(e){} }
 if(window.__OKT_TEST){ window.__OKT_TEST.api={mergeStates:mergeStates,getState:function(){ return state; },setState:function(x){ state=x; },syncNow:syncNow,render:render}; }
 })();
 </script>
