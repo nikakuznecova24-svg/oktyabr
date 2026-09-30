@@ -737,7 +737,7 @@ function pageToday(){
     h+='</div>';
   }
   h+='</div>';
-  h+='<div style="text-align:center;margin-top:20px"><button class="btn primary" data-a="finishDay"'+(d.completed?' disabled':'')+'>'+(d.completed?'день завершён ✓':'завершить день')+'</button></div>';
+  h+='<div style="text-align:center;margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn primary" data-a="finishDay"'+(d.completed?' disabled':'')+'>'+(d.completed?'день завершён ✓':'завершить день')+'</button>'+(d.completed?'<button class="btn ghost" data-a="reopenDay">отменить завершение</button>':'')+'</div>';
   return h;
 }
 function taskRow(x){
@@ -1010,6 +1010,7 @@ document.addEventListener('click',function(e){
     if(mv.length) withUndo('перенесено: '+mv.length,function(){ mv.forEach(function(x){ day(vd).tasks.push({id:uid(),title:x.title,done:false,star:false}); }); pd0.tasks=pd0.tasks.filter(function(x){ if(x.done) return true; tomb(x.id); return false; }); });
     rerender(); return;
   }
+  if(a==='reopenDay'){ day(vd).completed=false; save(); rerender(); showToast('день снова открыт'); return; }
   if(a==='finishDay'){ if(day(vd).completed) return; day(vd).completed=true; save(); rerender(); dayCompleteModal(vd); return; }
   if(a==='toggleDay'){ lastPop='.check[data-id="'+id+'"]'; var q1=dtask(); if(q1){ q1.done=!q1.done; save(); rerender(); } return; }
   if(a==='starDay'){ var q2=dtask(); if(q2){ if(!q2.star && day(vd).tasks.filter(function(z){ return z.star; }).length>=3){ setSync('ключевых уже три'); setTimeout(function(){ setSync(''); },2500); return; } q2.star=!q2.star; save(); rerender(); } return; }
