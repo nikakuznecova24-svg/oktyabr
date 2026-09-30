@@ -465,6 +465,9 @@ button.star.on{color:#f0a060 !important}
   .nav{left:50% !important;right:auto !important;transform:translateX(-50%) !important;bottom:calc(14px + env(safe-area-inset-bottom)) !important;width:auto !important;grid-template-columns:none !important}
   #app{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
 }
+
+/* ---- v25: кнопка «завершить день» ---- */
+.btn[disabled]{opacity:.75;cursor:default}
 </style>
 </head>
 <body data-time="morning">
@@ -732,6 +735,7 @@ function pageToday(){
   });
   h+='<div class="add-row"><button class="btn primary" data-a="openPick">'+(picks.length?'изменить выбор':'выбрать на день')+'</button></div></div>';
   h+='</div></div>';
+  h+='<div style="text-align:center;margin-top:20px"><button class="btn primary" data-a="finishDay"'+(d.completed?' disabled':'')+'>'+(d.completed?'день завершён ✓':'завершить день')+'</button></div>';
   return h;
 }
 function taskRow(x){
@@ -899,6 +903,16 @@ function payModal(personName){
    function(fd){ var a=parseFloat(fd.amount); if(!a||a<=0) return; state.payments.push({id:uid(),date:fd.date||todayStr(),amount:a,note:fd.note||''}); save(); closeModal(); render(); });
   document.getElementById('mc').addEventListener('click',closeModal);
 }
+function dayStats(vd){
+  var d=dayRead(vd), stars=d.tasks.filter(function(x){ return x.star; }), rest=d.tasks.filter(function(x){ return !x.star; });
+  var picks=(d.pick||[]).map(itemByKey).filter(Boolean);
+  return {keyDone:stars.filter(function(x){ return x.done; }).length, keyTotal:stars.length, taskDone:d.tasks.filter(function(x){ return x.done; }).length, taskTotal:d.tasks.length, stDone:picks.filter(function(it){ return itemDone(vd,it); }).length, stTotal:picks.length};
+}
+function dayCompleteModal(vd){
+  var st=dayStats(vd), n=diffDays(vd,state.startDate)+1, label=(n>=1?('день '+n):shortDate(vd))+' завершён';
+  openModal('<div style="text-align:center"><div style="font-size:40px;margin-bottom:8px">🌙</div><div class="small">'+label+'</div><h3 style="font-size:24px;margin:6px 0 14px;color:var(--ink);text-transform:none;letter-spacing:0">ты сияешь ✨</h3><div class="counters" style="grid-template-columns:repeat(3,1fr);margin-bottom:14px"><div class="tile"><b>'+st.keyDone+'/'+st.keyTotal+'</b><div class="lbl">ключевых</div></div><div class="tile"><b>'+st.taskDone+'/'+st.taskTotal+'</b><div class="lbl">задач</div></div><div class="tile"><b>'+st.stDone+'/'+st.stTotal+'</b><div class="lbl">состояние</div></div></div><div class="small" style="margin-bottom:18px">маленькие шаги каждый день создают большие результаты. засыпай с чувством выполненного дела.</div><button type="button" class="btn primary" id="mc" style="width:100%">спокойной ночи 🌙</button></div>',function(){});
+  document.getElementById('mc').addEventListener('click',closeModal);
+}
 function walletModal(){
   var list=state.payments.slice().sort(function(x,y){ return x.date<y.date?1:-1; });
   var rows=list.length?list.map(function(p){ return '<div class="row" data-a="editPay" data-id="'+p.id+'" style="cursor:pointer;margin-bottom:12px"><div class="grow"><b style="font-weight:600">'+money(p.amount)+'</b><div class="small">'+esc(p.note||'без пометки')+' · '+esc(p.date.split('-').reverse().join('.'))+'</div></div></div>'; }).join(''):'<div class="empty">оплат пока нет</div>';
@@ -994,6 +1008,7 @@ document.addEventListener('click',function(e){
     if(mv.length) withUndo('перенесено: '+mv.length,function(){ mv.forEach(function(x){ day(vd).tasks.push({id:uid(),title:x.title,done:false,star:false}); }); pd0.tasks=pd0.tasks.filter(function(x){ if(x.done) return true; tomb(x.id); return false; }); });
     rerender(); return;
   }
+  if(a==='finishDay'){ if(day(vd).completed) return; day(vd).completed=true; save(); rerender(); dayCompleteModal(vd); return; }
   if(a==='toggleDay'){ lastPop='.check[data-id="'+id+'"]'; var q1=dtask(); if(q1){ q1.done=!q1.done; save(); rerender(); } return; }
   if(a==='starDay'){ var q2=dtask(); if(q2){ if(!q2.star && day(vd).tasks.filter(function(z){ return z.star; }).length>=3){ setSync('ключевых уже три'); setTimeout(function(){ setSync(''); },2500); return; } q2.star=!q2.star; save(); rerender(); } return; }
   if(a==='editDay'){ var q3=dtask(); if(q3) taskModal(q3,function(){ day(vd).tasks=day(vd).tasks.filter(function(z){ return z!==q3; }); }); return; }
