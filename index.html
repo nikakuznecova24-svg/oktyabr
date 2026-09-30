@@ -501,7 +501,7 @@ button.star.on{color:#f0a060 !important}
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1790788844';
+var BUILD = '1790788870';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['reply','ответил'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
@@ -913,7 +913,7 @@ function openModal(html,onSubmit){
   bg.addEventListener('click',function(e){ if(e.target===bg) closeModal(); });
   var f=bg.querySelector('form');
   f.addEventListener('submit',function(e){ e.preventDefault(); var fd={}; Array.prototype.forEach.call(f.elements,function(el){ if(el.name) fd[el.name]=el.value; }); onSubmit(fd); });
-  var first=f.querySelector('input,textarea'); if(first&&first.focus) first.focus();
+  var first=f.querySelector('input:not([type=checkbox]):not([type=hidden]),textarea'); try{ if(first&&first.focus) first.focus(); }catch(e){}
 }
 function payModal(personName){
   openModal('<h3>оплата</h3><input type="number" name="amount" inputmode="decimal" placeholder="сумма, ₽" required><input type="text" name="note" placeholder="от кого и за что" value="'+esc(personName||'')+'">'+dpHTML('date',todayStr())+'<div class="two"><button type="button" class="btn ghost" id="mc">отмена</button><button class="btn primary">сохранить</button></div>',
