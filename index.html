@@ -492,6 +492,24 @@ button.star.on{color:#f0a060 !important}
 .glassbtn.done{background:rgba(255,255,255,.8);box-shadow:inset 0 0 0 1px #fff,0 0 30px 4px rgba(185,170,245,.55)}
 .glassbtn:active{transform:scale(.98)}
 .rocket{display:flex;justify-content:center;margin:0 0 2px}
+
+/* ---- v29: телефон: крупнее текст, зоны нажатия, ночное затемнение, узкие экраны ---- */
+@media(max-width:640px){ body{zoom:1} }
+@media(max-width:899px){
+  .brand-sub,.dayno span,.card h3,.small,.chip,.slot .kind,.tile .lbl,.ticks span,.cal .wd,.wpill small,.sync,.funnel .fnum small,.badge,.stage-tag,.daybadge span,.tile .goal,.mv5 .hd,.dpg .wd,.help,.hello-date,.empty,.lbl,.gnums span,.tl-head .tl-sub,.mv5,.topbar .brand,.person .acts .btn{font-size:14px}
+  .nav button{font-size:13px;min-height:48px}
+  .chev{width:44px;height:44px;flex:0 0 44px}
+  .plus{flex:0 0 44px;width:44px;height:44px}
+  .mini,.task .mini{width:40px;height:40px;flex:0 0 40px}
+  .seg button{padding:12px 20px}
+  .btn{min-height:44px}
+  .card{min-width:0}
+  img,svg{max-width:100%}
+  .modal{max-height:92vh;max-height:92dvh;overflow-y:auto}
+  html[data-night]{filter:brightness(.88) sepia(.1)}
+}
+@media(max-width:360px){ .hello{font-size:24px} .nav{gap:6px !important} .nav button{padding-left:12px !important;padding-right:12px !important} }
+@media(max-height:500px) and (orientation:landscape){ .nav button{min-height:40px} #app{padding-bottom:calc(72px + env(safe-area-inset-bottom))} }
 </style>
 </head>
 <body data-time="morning">
@@ -508,7 +526,7 @@ button.star.on{color:#f0a060 !important}
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1790800481';
+var BUILD = '1790800582';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['reply','ответил'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
@@ -1111,6 +1129,43 @@ document.addEventListener('visibilitychange',function(){ if(!document.hidden){ c
 try{ window.addEventListener('online',function(){ syncNow(false); }); }catch(e){}
 setInterval(function(){ if(!document.hidden && !modalOpen()){ syncNow(false); checkVersion(false); } },60000);
 
+
+/* свайп влево по задаче, тянуть вниз для обновления, ночное затемнение */
+function swipeTask(r){
+  var chk=r.querySelector('.check'); if(!chk) return;
+  var a=chk.getAttribute('data-a'), id=chk.getAttribute('data-id'), g=r.querySelector('.grow'), title=g?g.textContent:'';
+  var isDay=(a==='toggleDay'), vd=VD();
+  openModal('<h3>'+esc(title)+'</h3>'+(isDay?'<button type="button" class="btn ghost" id="swLater">отложить на завтра</button>':'')+'<button type="button" class="btn ghost" id="swDel">удалить</button><button type="button" class="btn ghost" id="swCancel">отмена</button>',function(){});
+  document.getElementById('swCancel').addEventListener('click',closeModal);
+  var later=document.getElementById('swLater');
+  if(later) later.addEventListener('click',function(){
+    closeModal();
+    var q=day(vd).tasks.filter(function(z){ return z.id===id; })[0]; if(!q) return;
+    withUndo('перенесено на завтра',function(){ tomb(id); day(vd).tasks=day(vd).tasks.filter(function(z){ return z.id!==id; }); day(addDays(vd,1)).tasks.push({id:uid(),title:q.title,done:false,star:!!q.star}); });
+    render();
+  });
+  document.getElementById('swDel').addEventListener('click',function(){
+    closeModal();
+    withUndo('задача удалена',function(){ tomb(id); if(isDay) day(vd).tasks=day(vd).tasks.filter(function(z){ return z.id!==id; }); else state.tasks=state.tasks.filter(function(z){ return z.id!==id; }); });
+    render();
+  });
+}
+(function(){
+  var sx=0,sy=0,row=null,atTop=false;
+  document.addEventListener('touchstart',function(e){
+    if(modalOpen()||!e.touches||!e.touches[0]) return;
+    sx=e.touches[0].clientX; sy=e.touches[0].clientY; atTop=(window.pageYOffset||0)<=0;
+    row=e.target&&e.target.closest?e.target.closest('.task'):null;
+  },{passive:true});
+  document.addEventListener('touchend',function(e){
+    if(!e.changedTouches||!e.changedTouches[0]) return;
+    var dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy, r=row; row=null;
+    if(r&&dx<-70&&Math.abs(dy)<30){ swipeTask(r); return; }
+    if(atTop&&dy>110&&Math.abs(dx)<40&&!modalOpen()&&hasCloud()){ atTop=false; setSync('обновляю…'); syncNow(true); checkVersion(false); }
+  },{passive:true});
+  function night(){ var h=new Date().getHours(); if(h>=20||h<6) document.documentElement.setAttribute('data-night','1'); else document.documentElement.removeAttribute('data-night'); }
+  night(); setInterval(night,60000);
+})();
 state=load();
 var beforeMig=stable(stripForCmp(state));
 migrateAll();
