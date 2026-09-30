@@ -487,7 +487,7 @@ button.star.on{color:#f0a060 !important}
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1790788756';
+var BUILD = '1790788810';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['reply','ответил'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
@@ -738,7 +738,7 @@ function pageToday(){
     h+='</div>';
   }
   h+='</div>';
-  h+='<div style="text-align:center;margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btn primary" data-a="finishDay"'+(d.completed?' disabled':'')+'>'+(d.completed?'день завершён ✓':'завершить день')+'</button>'+(d.completed?'<button class="btn ghost" data-a="reopenDay">отменить завершение</button>':'')+'</div>';
+  h+='<div style="text-align:center;margin-top:20px"><button class="btn primary" data-a="finishDay">'+(d.completed?'день завершён ✓':'завершить день')+'</button></div>';
   return h;
 }
 function taskRow(x){
@@ -1011,8 +1011,7 @@ document.addEventListener('click',function(e){
     if(mv.length) withUndo('перенесено: '+mv.length,function(){ mv.forEach(function(x){ day(vd).tasks.push({id:uid(),title:x.title,done:false,star:false}); }); pd0.tasks=pd0.tasks.filter(function(x){ if(x.done) return true; tomb(x.id); return false; }); });
     rerender(); return;
   }
-  if(a==='reopenDay'){ day(vd).completed=false; save(); rerender(); showToast('день снова открыт'); return; }
-  if(a==='finishDay'){ if(day(vd).completed) return; day(vd).completed=true; save(); rerender(); dayCompleteModal(vd); return; }
+  if(a==='finishDay'){ if(day(vd).completed){ day(vd).completed=false; save(); rerender(); return; } day(vd).completed=true; save(); rerender(); dayCompleteModal(vd); return; }
   if(a==='toggleDay'){ lastPop='.check[data-id="'+id+'"]'; var q1=dtask(); if(q1){ q1.done=!q1.done; save(); rerender(); } return; }
   if(a==='starDay'){ var q2=dtask(); if(q2){ if(!q2.star && day(vd).tasks.filter(function(z){ return z.star; }).length>=3){ setSync('ключевых уже три'); setTimeout(function(){ setSync(''); },2500); return; } q2.star=!q2.star; save(); rerender(); } return; }
   if(a==='editDay'){ var q3=dtask(); if(q3) taskModal(q3,function(){ day(vd).tasks=day(vd).tasks.filter(function(z){ return z!==q3; }); }); return; }
