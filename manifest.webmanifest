@@ -1,6 +1,6 @@
 {
-  "name": "октябрь",
-  "short_name": "октябрь",
+  "name": "запуск в космос",
+  "short_name": "запуск",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
