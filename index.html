@@ -279,6 +279,32 @@ button.star{min-width:36px;min-height:36px}
 .add-row input[type=number]{flex:1 1 90px;min-width:0}
 .tile .lbl,.card h3,.hello{overflow-wrap:anywhere}
 input,textarea,select{text-overflow:clip}
+
+/* ---- v6: мобильная версия: компактнее на 20%, полноширинное меню с иконками, списки без лишних рамок ---- */
+.nav button{display:inline-flex;align-items:center;gap:8px}
+.nav button svg{width:20px;height:20px;flex:0 0 20px}
+.check,.mini,.x,button.star{position:relative}
+.check::before,.mini::before,.x::before,button.star::before{content:"";position:absolute;inset:-8px}
+.card .row[style*="margin-bottom"]{margin-bottom:0 !important;padding:11px 0;border-top:1px solid rgba(90,80,120,.09)}
+.card h3 + .row[style*="margin-bottom"],.card h3 + .empty + .row{border-top:0}
+.card .habit{padding:11px 0;border-top:1px solid rgba(90,80,120,.09)}
+.card h3 + .habit{border-top:0}
+.card .habit .row{margin-bottom:0}
+.modal::before{content:"";display:block;width:42px;height:4px;border-radius:4px;background:rgba(90,80,120,.22);margin:-8px auto 4px}
+@media(min-width:600px){.modal::before{display:none}}
+.modal{animation:sheetup .22s ease-out}
+@keyframes sheetup{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+@media(max-width:899px){
+  .nav{left:0;right:0;transform:none;bottom:0;border-radius:0;border:0;border-top:1px solid rgba(90,80,120,.12);box-shadow:0 -6px 24px rgba(120,100,170,.10);
+    display:grid;grid-template-columns:repeat(4,1fr);gap:0;padding:8px 6px calc(8px + env(safe-area-inset-bottom))}
+  .nav button{flex-direction:column;gap:3px;padding:6px 0;font-size:11px;background:transparent !important;color:#8a84a3;border-radius:12px}
+  .nav button.on{color:var(--ink);background:transparent !important}
+  .nav button.on svg{stroke:#f08a5d}
+  #app{padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+  #toast{bottom:calc(80px + env(safe-area-inset-bottom))}
+  .hello{font-size:28px}
+}
+@media(max-width:640px){ body{zoom:.8} }
 </style>
 </head>
 <body data-time="morning">
@@ -286,10 +312,10 @@ input,textarea,select{text-overflow:clip}
 <div id="app"><noscript>чтобы платформа открылась, нужно включить javascript в браузере</noscript></div>
 <div class="topbar"><div class="brand">октябрь</div><div class="sync" id="sync"></div></div>
 <nav class="nav" id="nav">
-  <button data-a="nav" data-p="month">месяц</button>
-  <button data-a="nav" data-p="week">неделя</button>
-  <button data-a="nav" data-p="today">сегодня</button>
-  <button data-a="nav" data-p="people">люди</button>
+  <button data-a="nav" data-p="month"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg><span>месяц</span></button>
+  <button data-a="nav" data-p="week"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4" width="17" height="16" rx="3"/><path d="M3.5 9h17M9 9v11"/></svg><span>неделя</span></button>
+  <button data-a="nav" data-p="today"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8.2 12.3l2.6 2.6 5-5.4"/></svg><span>сегодня</span></button>
+  <button data-a="nav" data-p="people"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="9" r="3.2"/><path d="M3.5 19c.6-3.3 3-5 5.5-5s4.9 1.7 5.5 5"/><circle cx="17" cy="10" r="2.4"/><path d="M15.5 14.4c2.4-.4 4.4 1 5 4.1"/></svg><span>люди</span></button>
 </nav>
 <script>
 (function(){
@@ -523,7 +549,7 @@ function pageToday(){
   h+='<div class="card"><h3>'+(vd===t?'задачи на сегодня':'задачи дня')+'</h3>';
   if(!list.length) h+='<div class="empty">пока пусто, добавь первую</div>';
   list.forEach(function(x){
-    h+='<div class="row" style="margin-bottom:10px"><button class="check'+(x.done?' on':'')+'" data-a="toggleDay" data-id="'+x.id+'">✓</button><div class="grow'+(x.done?' title-done':'')+'" data-a="editDay" data-id="'+x.id+'" style="cursor:pointer">'+esc(x.title)+'</div><button class="star'+(x.star?' on':'')+'" data-a="starDay" data-id="'+x.id+'" aria-label="ключевая">'+(x.star?'★':'☆')+'</button><button class="x" data-a="editDay" data-id="'+x.id+'" aria-label="изменить">✎</button><button class="x" data-a="delDay" data-id="'+x.id+'" aria-label="удалить">×</button></div>';
+    h+='<div class="row" style="margin-bottom:10px"><button class="check'+(x.done?' on':'')+'" data-a="toggleDay" data-id="'+x.id+'">✓</button><div class="grow'+(x.done?' title-done':'')+'" data-a="editDay" data-id="'+x.id+'" style="cursor:pointer">'+esc(x.title)+'</div><button class="star'+(x.star?' on':'')+'" data-a="starDay" data-id="'+x.id+'" aria-label="ключевая">'+(x.star?'★':'☆')+'</button></div>';
   });
   h+='<div class="add-row"><input type="text" id="newDayTask" placeholder="новая задача"><button class="btn primary" data-a="addDayTask">добавить</button></div>';
   var prev=dayRead(addDays(vd,-1)), undone=prev.tasks.filter(function(x){ return !x.done; });
@@ -551,13 +577,13 @@ function taskRow(x){
   var q=x.target>0, done=q?(x.count>=x.target):x.done;
   var h='<div class="habit"><div class="row"><button class="check'+(done?' on':'')+'" data-a="toggleTask" data-id="'+x.id+'">✓</button><div class="grow'+(done?' title-done':'')+'" data-a="editTask" data-id="'+x.id+'" style="cursor:pointer">'+esc(x.title)+'</div>';
   if(q) h+='<span class="small">'+(x.count||0)+' / '+x.target+'</span><div class="pm" style="display:flex;gap:6px"><button data-a="taskInc" data-id="'+x.id+'" data-d="-1" aria-label="минус" style="width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.7);padding:0;font-size:18px">−</button><button data-a="taskInc" data-id="'+x.id+'" data-d="1" aria-label="плюс" style="width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.7);padding:0;font-size:18px">+</button></div>';
-  h+='<button class="x" data-a="editTask" data-id="'+x.id+'" aria-label="изменить">✎</button><button class="x" data-a="delTask" data-id="'+x.id+'" aria-label="удалить">×</button></div>';
+  h+='</div>';
   if(q) h+='<div class="bar" style="margin-left:38px"><i style="width:'+Math.min(100,(x.count||0)/x.target*100)+'%"></i></div>';
   return h+'</div>';
 }
 function habitRow(hb,t){
   var n=habitDone(hb.id,COUNT_FROM,MONTH_END), pc=Math.min(100,n/hb.target*100);
-  return '<div class="habit"><div class="row"><div class="grow">'+esc(hb.name)+(hb.variants&&hb.variants.length?' <span class="small">· '+esc(hb.variants.join(', '))+'</span>':'')+'</div><span class="small">'+n+' / '+hb.target+' · '+Math.round(pc)+'%</span><button class="mini" data-a="habMinus" data-id="'+hb.id+'" aria-label="минус">−</button><button class="mini" data-a="habPlus" data-id="'+hb.id+'" aria-label="плюс">+</button><button class="x" data-a="editHabit" data-id="'+hb.id+'" aria-label="изменить">✎</button></div><div class="bar"><i style="width:'+pc+'%"></i></div></div>';
+  return '<div class="habit"><div class="row"><div class="grow" data-a="editHabit" data-id="'+hb.id+'" style="cursor:pointer">'+esc(hb.name)+'</div><span class="small">'+n+' / '+hb.target+'</span><button class="mini" data-a="habMinus" data-id="'+hb.id+'" aria-label="минус">−</button><button class="mini" data-a="habPlus" data-id="'+hb.id+'" aria-label="плюс">+</button></div><div class="bar"><i style="width:'+pc+'%"></i></div></div>';
 }
 function pageMonth(){
   var t=todayStr();
@@ -614,7 +640,7 @@ function pageWeek(){
   state.habits.forEach(function(hb){
     var n=habitDone(hb.id,mon,end), tg=weekTarget(hb), pc=Math.min(100,n/tg*100);
     var br=''; if(hb.variants&&hb.variants.length){ br='<div class="small" style="margin-left:0">'+hb.variants.map(function(v){ return esc(v)+' '+variantCount(hb.id,v,mon,end); }).join(' · ')+'</div>'; }
-    h+='<div style="margin-bottom:12px"><div class="row"><div class="grow">'+esc(hb.name)+'</div><span class="small">'+n+' / '+tg+' · '+Math.round(pc)+'%</span></div><div class="bar"><i style="width:'+pc+'%"></i></div>'+br+'</div>';
+    h+='<div style="margin-bottom:12px"><div class="row"><div class="grow">'+esc(hb.name)+'</div><span class="small">'+n+' / '+tg+'</span></div><div class="bar"><i style="width:'+pc+'%"></i></div>'+br+'</div>';
   });
   h+='</div>';
   h+='</div></div>';
@@ -678,7 +704,7 @@ function pagePeople(){
     list.forEach(function(p){
       var late=p.nextDate?diffDays(t,p.nextDate):-1, cls=(p.stage!=='paid'&&p.nextDate)?(late>0?' late':(late===0?' today':'')):'';
       h+='<div class="person'+cls+'"><b>'+esc(p.name)+'</b>'+(p.src?' <span class="stage-tag">· '+esc(p.src)+'</span>':'')+(p.note?'<div class="small">'+esc(p.note)+'</div>':'')+(p.next?'<div class="small" style="margin-top:4px">дальше: '+esc(p.next)+(p.nextDate?' · '+esc(p.nextDate.split('-').reverse().slice(0,2).join('.')):'')+'</div>':'')+(p.amount?'<div class="small">сумма '+money(p.amount)+'</div>':'');
-      h+='<div class="acts">'+(si>0?'<button class="btn ghost" data-a="mv" data-id="'+p.id+'" data-d="-1" aria-label="назад">←</button>':'')+(si<STAGES.length-1?'<button class="btn ghost" data-a="mv" data-id="'+p.id+'" data-d="1" aria-label="дальше">→</button>':'')+'<button class="btn ghost" data-a="editPerson" data-id="'+p.id+'">правка</button><button class="x" data-a="delPerson" data-id="'+p.id+'" aria-label="удалить">×</button></div></div>';
+      h+='<div class="acts">'+(si>0?'<button class="btn ghost" data-a="mv" data-id="'+p.id+'" data-d="-1" aria-label="назад">←</button>':'')+(si<STAGES.length-1?'<button class="btn ghost" data-a="mv" data-id="'+p.id+'" data-d="1" aria-label="дальше">→</button>':'')+'<button class="btn ghost" data-a="editPerson" data-id="'+p.id+'">изменить</button></div></div>';
     });
     h+='</div>';
   });
@@ -706,7 +732,7 @@ function payModal(personName){
 }
 function walletModal(){
   var list=state.payments.slice().sort(function(x,y){ return x.date<y.date?1:-1; });
-  var rows=list.length?list.map(function(p){ return '<div class="row" data-a="editPay" data-id="'+p.id+'" style="cursor:pointer;margin-bottom:12px"><div class="grow"><b style="font-weight:600">'+money(p.amount)+'</b><div class="small">'+esc(p.note||'без пометки')+' · '+esc(p.date.split('-').reverse().join('.'))+'</div></div><button type="button" class="x" data-a="editPay" data-id="'+p.id+'" aria-label="изменить">✎</button></div>'; }).join(''):'<div class="empty">оплат пока нет</div>';
+  var rows=list.length?list.map(function(p){ return '<div class="row" data-a="editPay" data-id="'+p.id+'" style="cursor:pointer;margin-bottom:12px"><div class="grow"><b style="font-weight:600">'+money(p.amount)+'</b><div class="small">'+esc(p.note||'без пометки')+' · '+esc(p.date.split('-').reverse().join('.'))+'</div></div></div>'; }).join(''):'<div class="empty">оплат пока нет</div>';
   openModal('<h3>кошелёк · '+money(earned())+'</h3><div style="max-height:52vh;overflow:auto">'+rows+'</div><div class="two"><button type="button" class="btn ghost" id="mc">закрыть</button><button type="button" class="btn primary" id="mpay">+ оплата</button></div>',function(){});
   document.getElementById('mc').addEventListener('click',closeModal);
   document.getElementById('mpay').addEventListener('click',function(){ closeModal(); openModal('<h3>оплата</h3><input type="number" name="amount" inputmode="decimal" placeholder="сумма, ₽" required><input type="text" name="note" placeholder="от кого и за что"><input type="date" name="date" value="'+todayStr()+'"><div class="two"><button type="button" class="btn ghost" id="mc">назад</button><button class="btn primary">сохранить</button></div>',
@@ -738,9 +764,10 @@ function habitModal(hb){
   document.getElementById('md').addEventListener('click',function(){ closeModal(); withUndo('привычка удалена',function(){ tomb(hb.id); state.habits=state.habits.filter(function(q){ return q!==hb; }); for(var d in state.log){ delete state.log[d][hb.id]; } }); render(); });
 }
 function personModal(p){
-  openModal('<h3>человек</h3><input type="text" name="name" placeholder="имя" value="'+esc(p.name)+'" required><input type="text" name="note" placeholder="чем занимается, что нужно" value="'+esc(p.note)+'"><select name="src">'+SOURCES.map(function(x){ return '<option'+(x===p.src?' selected':'')+'>'+esc(x)+'</option>'; }).join('')+'</select><input type="text" name="next" placeholder="следующий шаг" value="'+esc(p.next)+'"><input type="date" name="nextDate" value="'+esc(p.nextDate||'')+'"><input type="number" name="amount" inputmode="decimal" placeholder="сумма проекта, ₽" value="'+(p.amount?esc(p.amount):'')+'"><div class="two"><button type="button" class="btn ghost" id="mc">отмена</button><button class="btn primary">сохранить</button></div>',
+  openModal('<h3>человек</h3><input type="text" name="name" placeholder="имя" value="'+esc(p.name)+'" required><input type="text" name="note" placeholder="чем занимается, что нужно" value="'+esc(p.note)+'"><select name="src">'+SOURCES.map(function(x){ return '<option'+(x===p.src?' selected':'')+'>'+esc(x)+'</option>'; }).join('')+'</select><input type="text" name="next" placeholder="следующий шаг" value="'+esc(p.next)+'"><input type="date" name="nextDate" value="'+esc(p.nextDate||'')+'"><input type="number" name="amount" inputmode="decimal" placeholder="сумма проекта, ₽" value="'+(p.amount?esc(p.amount):'')+'"><div class="two"><button type="button" class="btn ghost" id="md">удалить</button><button class="btn primary">сохранить</button></div><button type="button" class="btn ghost" id="mc">отмена</button>',
    function(fd){ p.name=fd.name; p.note=fd.note; p.src=fd.src||p.src; p.next=fd.next; p.nextDate=fd.nextDate||''; p.amount=parseFloat(fd.amount)||0; save(); closeModal(); render(); });
   document.getElementById('mc').addEventListener('click',closeModal);
+  document.getElementById('md').addEventListener('click',function(){ closeModal(); withUndo('человек удалён',function(){ tomb(p.id); state.people=state.people.filter(function(q){ return q.id!==p.id; }); }); render(); });
 }
 function pickModal(t){
   var d=day(t), items=habitItems(), sel=(d.pick||[]).slice();
