@@ -273,8 +273,8 @@ button.star{min-width:36px;min-height:36px}
 #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(88px + env(safe-area-inset-bottom));z-index:30;background:rgba(47,42,69,.94);color:#fff;border-radius:999px;padding:10px 12px 10px 18px;display:flex;gap:12px;align-items:center;font-size:14px;box-shadow:0 10px 30px rgba(47,42,69,.35);max-width:92vw}
 #toast button{border:0;background:rgba(255,255,255,.18);color:#fff;border-radius:999px;padding:6px 14px;font-size:14px}
 @media(min-width:900px){ #toast{bottom:30px} }
-.mv5{display:grid;grid-template-columns:70px repeat(5,1fr);gap:6px;align-items:center;font-size:13px}
-.mv5 .hd{color:var(--ink-soft);text-align:center;font-size:12px}
+.mv5{display:grid;grid-template-columns:56px repeat(5,minmax(0,1fr));gap:4px;align-items:center;font-size:13px}
+.mv5 .hd{color:var(--ink-soft);text-align:center;font-size:11px !important;overflow-wrap:break-word;line-height:1.15}
 .mv5 b{font-weight:600;text-align:center;font-size:18px}
 .srcrow{display:grid;grid-template-columns:1fr auto auto auto;gap:10px;font-size:14px;margin-bottom:8px;align-items:center}
 .wpill{cursor:pointer}
@@ -352,7 +352,7 @@ input[type=number]{-moz-appearance:textfield}
 /* ---- v13: цвета (персик для действий, сиреневый для информации), строгая типографика, воздух, переключатель, анимации ---- */
 :root{ --ink-soft:#4f4868; }
 body{font-size:16px}
-.small,.hello-date,.empty,.lbl,.stage-tag,.mv5 .hd,.badge,.gnums span,.help{font-size:13px !important}
+.small,.hello-date,.empty,.lbl,.stage-tag,.badge,.gnums span,.help{font-size:13px !important}
 .card h3{font-size:13px !important;font-weight:500 !important;color:var(--ink-soft)}
 .hello,.earn .giant,.tile b,.sum .tile b{font-size:32px !important;font-weight:500 !important;line-height:1.1}
 b,strong,h1,h2,h3{font-weight:500}
@@ -510,7 +510,7 @@ button.star.on{color:#f0a060 !important}
 /* ---- v29: телефон: крупнее текст, зоны нажатия, ночное затемнение, узкие экраны ---- */
 @media(max-width:640px){ body{zoom:1} }
 @media(max-width:899px){
-  .brand-sub,.dayno span,.card h3,.small,.chip,.slot .kind,.tile .lbl,.ticks span,.cal .wd,.wpill small,.sync,.funnel .fnum small,.badge,.stage-tag,.daybadge span,.tile .goal,.mv5 .hd,.dpg .wd,.help,.hello-date,.empty,.lbl,.gnums span,.tl-head .tl-sub,.mv5,.topbar .brand,.person .acts .btn{font-size:14px}
+  .brand-sub,.dayno span,.card h3,.small,.chip,.slot .kind,.tile .lbl,.ticks span,.cal .wd,.wpill small,.sync,.funnel .fnum small,.badge,.stage-tag,.daybadge span,.tile .goal,.dpg .wd,.help,.hello-date,.empty,.lbl,.gnums span,.tl-head .tl-sub,.topbar .brand,.person .acts .btn{font-size:14px}
   .nav button{font-size:13px;min-height:48px}
   .chev{width:44px;height:44px;flex:0 0 44px}
   .plus{flex:0 0 44px;width:44px;height:44px}
@@ -540,7 +540,7 @@ button.star.on{color:#f0a060 !important}
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1790850267';
+var BUILD = '1790878613';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['reply','ответил'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
@@ -671,8 +671,9 @@ function showToast(msg,onUndo){
   var old=document.getElementById('toast'); if(old) old.parentNode.removeChild(old);
   var t=document.createElement('div'); t.id='toast';
   var sp=document.createElement('span'); sp.textContent=msg; t.appendChild(sp);
-  if(onUndo){ var b=document.createElement('button'); b.type='button'; b.textContent='отменить'; b.addEventListener('click',function(){ onUndo(); if(t.parentNode) t.parentNode.removeChild(t); }); t.appendChild(b); }
-  document.body.appendChild(t); clearTimeout(toastTimer); toastTimer=setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); },7000);
+  if(onUndo){ var b=document.createElement('button'); b.type='button'; b.textContent='отменить'; b.addEventListener('click',function(e){ e.stopPropagation(); onUndo(); if(t.parentNode) t.parentNode.removeChild(t); }); t.appendChild(b); }
+  t.addEventListener('click',function(){ if(t.parentNode) t.parentNode.removeChild(t); clearTimeout(toastTimer); });
+  document.body.appendChild(t); clearTimeout(toastTimer); toastTimer=setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); },4000);
 }
 function withUndo(msg,fn){
   var snap=JSON.stringify(state), started=Date.now(); fn(); save();
@@ -777,7 +778,7 @@ function greeting(){ var h=new Date().getHours(); return h<5?'доброй но�
 /* ---------- страницы ---------- */
 function pageToday(){
   var t=todayStr(), vd=VD(), d=dayRead(vd), dt=pd(vd), h='';
-  h+='<div class="rocket" aria-hidden="true"><svg viewBox="0 0 48 48" width="34" height="34"><g transform="rotate(40 24 24)"><path d="M24 4c7 5 9 14 9 22H15c0-8 2-17 9-22z" fill="#E7A1C0" stroke="#5a3f55" stroke-width="1.4" stroke-linejoin="round"/><circle cx="24" cy="19" r="4" fill="#9F86D0" stroke="#5a3f55" stroke-width="1.4"/><path d="M15 26l-6 9 8-2zM33 26l6 9-8-2z" fill="#9F86D0" stroke="#5a3f55" stroke-width="1.4" stroke-linejoin="round"/><path d="M20 26h8l-4 12z" fill="#FBEFD9" stroke="#5a3f55" stroke-width="1.4" stroke-linejoin="round"/></g></svg></div><div class="hero-row" style="justify-content:center;flex-direction:column;gap:8px;text-align:center"><div class="datebar" style="justify-content:center"><button class="chev" data-a="dayNav" data-d="-1" aria-label="день назад"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><div style="text-align:center;min-width:200px"><div class="hello" style="text-align:center">'+WD_FULL[dt.getDay()]+', '+dt.getDate()+' '+MONTHS_GEN[dt.getMonth()]+'</div>'+(vd===t?'':'<div class="hello-date" style="margin-top:2px;text-align:center">'+relLabel(vd,t)+'</div>')+'</div><button class="chev" data-a="dayNav" data-d="1" aria-label="день вперёд"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg></button></div>'+(vd!==t?'<button class="btn ghost" data-a="dayToday">сегодня</button>':'')+'</div>';
+  h+='<div class="hero-row" style="justify-content:center;flex-direction:column;gap:8px;text-align:center"><div class="datebar" style="justify-content:center"><button class="chev" data-a="dayNav" data-d="-1" aria-label="день назад"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><div style="text-align:center;min-width:200px"><div class="hello" style="text-align:center">'+WD_FULL[dt.getDay()]+', '+dt.getDate()+' '+MONTHS_GEN[dt.getMonth()]+'</div>'+(vd===t?'':'<div class="hello-date" style="margin-top:2px;text-align:center">'+relLabel(vd,t)+'</div>')+'</div><button class="chev" data-a="dayNav" data-d="1" aria-label="день вперёд"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg></button></div>'+(vd!==t?'<button class="btn ghost" data-a="dayToday">сегодня</button>':'')+'</div>';
   h+='<div class="quote">'+esc(QUOTES[(dt.getDate()+dt.getMonth())%QUOTES.length])+'</div>';
   h+='<div class="stack">';
   var list=d.tasks.slice().sort(function(x,y){ return (y.star?1:0)-(x.star?1:0); });
@@ -1025,11 +1026,11 @@ function personModal(p){
 function pickModal(t){
   var d=day(t), items=habitItems(), sel=(d.pick||[]).slice();
   var rows=items.map(function(it){ var hb=habitOf(it.hid); return '<label class="pickrow"><input type="checkbox" name="k" value="'+esc(it.key)+'"'+(sel.indexOf(it.key)>=0?' checked':'')+'><span class="ptile"><span class="pdot"></span><span class="pnm">'+esc(it.name)+'</span><span class="pct">'+habitDone(it.hid,COUNT_FROM,MONTH_END)+' / '+hb.target+'</span></span></label>'; }).join('');
-  openModal('<div class="row" style="align-items:baseline"><h3 class="grow" style="margin:0">состояние на день</h3><span class="small" id="pickcnt">'+sel.length+' из 3</span></div><div class="pick-list">'+rows+'</div><div class="two"><button type="button" class="btn ghost" id="mc">отмена</button><button class="btn primary">сохранить</button></div>',
-   function(){ var picked=Array.prototype.map.call(document.querySelectorAll('#modal input[name=k]:checked'),function(i){ return i.value; }).slice(0,3); d.pick=picked; save(); closeModal(); render(); });
+  openModal('<div class="row" style="align-items:baseline"><h3 class="grow" style="margin:0">состояние на день</h3><span class="small" id="pickcnt">'+sel.length+' из 5</span></div><div class="pick-list">'+rows+'</div><div class="two"><button type="button" class="btn ghost" id="mc">отмена</button><button class="btn primary">сохранить</button></div>',
+   function(){ var picked=Array.prototype.map.call(document.querySelectorAll('#modal input[name=k]:checked'),function(i){ return i.value; }).slice(0,5); d.pick=picked; save(); closeModal(); render(); });
   document.getElementById('mc').addEventListener('click',closeModal);
   var boxes=document.querySelectorAll('#modal input[name=k]');
-  Array.prototype.forEach.call(boxes,function(bx){ bx.addEventListener('change',function(){ var n=document.querySelectorAll('#modal input[name=k]:checked').length; if(n>3){ bx.checked=false; n=3; } var c=document.getElementById('pickcnt'); if(c) c.textContent=n+' из 3'; }); });
+  Array.prototype.forEach.call(boxes,function(bx){ bx.addEventListener('change',function(){ var n=document.querySelectorAll('#modal input[name=k]:checked').length; if(n>5){ bx.checked=false; n=5; } var c=document.getElementById('pickcnt'); if(c) c.textContent=n+' из 5'; }); });
 }
 
 /* ---------- отрисовка ---------- */
