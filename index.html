@@ -172,7 +172,6 @@ button.star.on{color:#e6a64c;text-shadow:0 0 12px rgba(255,255,255,.95)}
 .person.late{border-color:#f0b8c0}
 .person.today{border-color:#f2d09a}
 .stage-tag{font-size:11px;color:var(--ink-soft)}
-.pick-list label{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid rgba(90,80,120,.1);font-size:15px}
 .pick-list input{width:auto}
 .mini{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:rgba(255,253,249,.9);padding:0;font-size:18px;line-height:1;flex:0 0 30px}
 .flat{padding:6px 4px 18px}
@@ -490,15 +489,15 @@ button.star.on{color:#f0a060 !important}
 /* ---- v27: красивый выбор состояния на день ---- */
 .pickrow{display:block;position:relative;cursor:pointer}
 .pickrow input{position:absolute;opacity:0;pointer-events:none}
-.ptile{display:flex;align-items:center;gap:14px;background:rgba(255,253,249,.95);border-radius:24px;padding:12px 18px 12px 14px;margin-bottom:10px;box-shadow:0 6px 18px rgba(150,130,200,.12),inset 0 0 0 1px rgba(255,255,255,.95);transition:box-shadow .2s ease,transform .15s ease}
-.ptile .pdot{flex:0 0 26px;width:26px;height:26px;border-radius:50%;border:1.5px solid rgba(90,80,120,.28);background:rgba(255,255,255,.7);display:inline-flex;align-items:center;justify-content:center;position:relative}
-.ptile .pnm{flex:1;min-width:0;overflow-wrap:anywhere;font-size:17px}
-.ptile .pct{font-size:14px;color:var(--ink-soft)}
+.ptile{display:flex;align-items:center;gap:8px;background:rgba(255,253,249,.95);border-radius:16px;padding:8px 10px;box-shadow:0 6px 18px rgba(150,130,200,.12),inset 0 0 0 1px rgba(255,255,255,.95);transition:box-shadow .2s ease,transform .15s ease}
+.ptile .pdot{flex:0 0 20px;width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(90,80,120,.28);background:rgba(255,255,255,.7);display:inline-flex;align-items:center;justify-content:center;position:relative}
+.ptile .pnm{flex:1;min-width:0;overflow-wrap:anywhere;font-size:13px;line-height:1.2}
+.ptile .pct{font-size:10px;color:var(--ink-soft);white-space:nowrap}
 .pickrow input:checked + .ptile{box-shadow:0 0 0 2px #ffcfae,0 10px 26px rgba(255,148,104,.28)}
 .pickrow input:checked + .ptile .pdot{background:linear-gradient(135deg,#ffbe9d,#ff9468);border-color:transparent}
-.pickrow input:checked + .ptile .pdot::after{content:"✓";color:#fff;font-size:14px}
+.pickrow input:checked + .ptile .pdot::after{content:"✓";color:#fff;font-size:11px}
 .pickrow input:active + .ptile{transform:scale(.985)}
-.pick-list{scrollbar-width:none}.pick-list::-webkit-scrollbar{display:none}
+.pick-list{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .modal{max-width:520px}
 
 /* ---- v28: стеклянная кнопка «завершить день» (вариант Б) ---- */
@@ -541,7 +540,7 @@ button.star.on{color:#f0a060 !important}
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1790800854';
+var BUILD = '1790850267';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['reply','ответил'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
@@ -1026,7 +1025,7 @@ function personModal(p){
 function pickModal(t){
   var d=day(t), items=habitItems(), sel=(d.pick||[]).slice();
   var rows=items.map(function(it){ var hb=habitOf(it.hid); return '<label class="pickrow"><input type="checkbox" name="k" value="'+esc(it.key)+'"'+(sel.indexOf(it.key)>=0?' checked':'')+'><span class="ptile"><span class="pdot"></span><span class="pnm">'+esc(it.name)+'</span><span class="pct">'+habitDone(it.hid,COUNT_FROM,MONTH_END)+' / '+hb.target+'</span></span></label>'; }).join('');
-  openModal('<div class="row" style="align-items:baseline"><h3 class="grow" style="margin:0">состояние на день</h3><span class="small" id="pickcnt">'+sel.length+' из 3</span></div><div class="pick-list" style="max-height:52vh;overflow:auto;margin:4px -4px 0;padding:4px">'+rows+'</div><div class="two"><button type="button" class="btn ghost" id="mc">отмена</button><button class="btn primary">сохранить</button></div>',
+  openModal('<div class="row" style="align-items:baseline"><h3 class="grow" style="margin:0">состояние на день</h3><span class="small" id="pickcnt">'+sel.length+' из 3</span></div><div class="pick-list">'+rows+'</div><div class="two"><button type="button" class="btn ghost" id="mc">отмена</button><button class="btn primary">сохранить</button></div>',
    function(){ var picked=Array.prototype.map.call(document.querySelectorAll('#modal input[name=k]:checked'),function(i){ return i.value; }).slice(0,3); d.pick=picked; save(); closeModal(); render(); });
   document.getElementById('mc').addEventListener('click',closeModal);
   var boxes=document.querySelectorAll('#modal input[name=k]');
