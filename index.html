@@ -158,7 +158,8 @@ button{font:inherit;font-weight:400;color:var(--ink);cursor:pointer}
 button.star{border:0;background:transparent;font-size:22px;line-height:1;padding:0 4px;color:#a59fbb;cursor:pointer}
 button.star.on{color:#e6a64c;text-shadow:0 0 12px rgba(255,255,255,.95)}
 
-.funnel .frow{display:grid;grid-template-columns:110px 1fr 74px;gap:10px;align-items:center;margin-bottom:8px}
+.funnel .frow{display:grid;grid-template-columns:minmax(0,96px) minmax(0,1fr) 74px;gap:8px;align-items:center;margin-bottom:8px}
+.funnel .frow>div:first-child{overflow-wrap:break-word;line-height:1.15;font-size:13px}
 .funnel .fbar{height:22px;border-radius:12px;background:rgba(255,255,255,.55);overflow:hidden}
 .funnel .fbar i{display:block;height:100%;border-radius:12px;background:linear-gradient(90deg,var(--accent2),var(--accent));min-width:4px}
 .funnel .fnum{font-size:14px;text-align:right}
@@ -540,7 +541,7 @@ button.star.on{color:#f0a060 !important}
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1790878613';
+var BUILD = '1790878968';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['reply','ответил'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
