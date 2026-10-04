@@ -541,7 +541,7 @@ button.star.on{color:#f0a060 !important}
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1790878968';
+var BUILD = '1791103573';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['reply','ответил'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
@@ -1027,11 +1027,11 @@ function personModal(p){
 function pickModal(t){
   var d=day(t), items=habitItems(), sel=(d.pick||[]).slice();
   var rows=items.map(function(it){ var hb=habitOf(it.hid); return '<label class="pickrow"><input type="checkbox" name="k" value="'+esc(it.key)+'"'+(sel.indexOf(it.key)>=0?' checked':'')+'><span class="ptile"><span class="pdot"></span><span class="pnm">'+esc(it.name)+'</span><span class="pct">'+habitDone(it.hid,COUNT_FROM,MONTH_END)+' / '+hb.target+'</span></span></label>'; }).join('');
-  openModal('<div class="row" style="align-items:baseline"><h3 class="grow" style="margin:0">состояние на день</h3><span class="small" id="pickcnt">'+sel.length+' из 5</span></div><div class="pick-list">'+rows+'</div><div class="two"><button type="button" class="btn ghost" id="mc">отмена</button><button class="btn primary">сохранить</button></div>',
-   function(){ var picked=Array.prototype.map.call(document.querySelectorAll('#modal input[name=k]:checked'),function(i){ return i.value; }).slice(0,5); d.pick=picked; save(); closeModal(); render(); });
+  openModal('<div class="row" style="align-items:baseline"><h3 class="grow" style="margin:0">состояние на день</h3><span class="small" id="pickcnt">'+sel.length+' из 6</span></div><div class="pick-list">'+rows+'</div><div class="two"><button type="button" class="btn ghost" id="mc">отмена</button><button class="btn primary">сохранить</button></div>',
+   function(){ var picked=Array.prototype.map.call(document.querySelectorAll('#modal input[name=k]:checked'),function(i){ return i.value; }).slice(0,6); d.pick=picked; save(); closeModal(); render(); });
   document.getElementById('mc').addEventListener('click',closeModal);
   var boxes=document.querySelectorAll('#modal input[name=k]');
-  Array.prototype.forEach.call(boxes,function(bx){ bx.addEventListener('change',function(){ var n=document.querySelectorAll('#modal input[name=k]:checked').length; if(n>5){ bx.checked=false; n=5; } var c=document.getElementById('pickcnt'); if(c) c.textContent=n+' из 5'; }); });
+  Array.prototype.forEach.call(boxes,function(bx){ bx.addEventListener('change',function(){ var n=document.querySelectorAll('#modal input[name=k]:checked').length; if(n>6){ bx.checked=false; n=6; } var c=document.getElementById('pickcnt'); if(c) c.textContent=n+' из 6'; }); });
 }
 
 /* ---------- отрисовка ---------- */
