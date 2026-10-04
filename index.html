@@ -30,6 +30,8 @@
 <title>запуск в космос</title>
 <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap"></noscript>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,600;1,500&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,600;1,500&display=swap"></noscript>
 <style>
 :root{
   --ink:#3b3550; --ink-soft:#6f6888; --glass:rgba(255,255,255,.62); --glass-strong:rgba(255,255,255,.82);
@@ -525,6 +527,39 @@ button.star.on{color:#f0a060 !important}
 }
 @media(max-width:360px){ .hello{font-size:24px} .nav{gap:6px !important} .nav button{padding-left:12px !important;padding-right:12px !important} }
 @media(max-height:500px) and (orientation:landscape){ .nav button{min-height:40px} #app{padding-bottom:calc(72px + env(safe-area-inset-bottom))} }
+
+/* ---- v31: тёплый стиль по референсу — кремовый фон, крупные мягкие сферы (персик/роза/лаванда/олива), матовые карточки, serif-заголовки, меньше линий ---- */
+:root{
+  --ink:#3a2f3a; --ink-soft:#948792;
+  --o1:#f6d7c2; --o2:#eeb0b8; --b1:#ddd0ec; --b2:#cdd3a8; --l1:#f0d6db; --l2:#f2e2cb;
+}
+body[data-time="day"]{ --o1:#f8ddc9; --o2:#f0bcc3; --b1:#e2d6ef; --b2:#d2d7af; --l1:#f3dadf; --l2:#f5e6d2; }
+body[data-time="evening"]{ --o1:#eec6cf; --o2:#dfb3c2; --b1:#cdbfe3; --b2:#b7c196; --l1:#e3c7d8; --l2:#e9d6c4; }
+body{ background:#f9f3ee !important; }
+.aura{ opacity:.95 }
+.aura i{ filter:blur(70px); opacity:.65 }
+.aura::after{ opacity:.10 }
+
+.card,.tile,.task,.person,.ptile,.col,.daybadge,.modal,.glassbtn,.nav button,.dpcal{ background:#fffdfa !important; }
+.card{ border-radius:28px !important; padding:22px 20px 18px !important; box-shadow:0 16px 40px rgba(90,60,70,.07) !important; border:0 !important }
+.task,.ptile,.person{ box-shadow:0 8px 22px rgba(90,60,70,.06) !important }
+
+.card h3,.cardhead h3{ font-family:'Lora',Georgia,serif !important; font-size:19px !important; font-weight:600 !important; color:var(--ink) !important; letter-spacing:0 !important }
+.hello,.dayno b,.earn .giant{ font-family:'Lora',Georgia,serif !important; font-weight:600 !important }
+.quote{ font-family:'Lora',Georgia,serif !important; font-style:italic; font-weight:500 !important; color:var(--ink-soft) !important }
+
+/* меньше линий-разделителей, больше воздуха между строками */
+.card .row[style*="margin-bottom"],.card .habit{ border-top:0 !important }
+
+/* акценты: персиково-розовый градиент вместо оранжевого/голубого/лавандового */
+.btn.primary,.plus,.dpd.sel,.check.on{ background:linear-gradient(135deg,var(--l1),var(--o2)) !important; box-shadow:none !important; color:#fff !important }
+.bar i,.funnel .fbar i,.flat .thin i,.earn .bar i{ background:linear-gradient(90deg,var(--l1),var(--o2)) !important }
+.nav button.on{ background:linear-gradient(135deg,var(--l1),var(--o2)) !important; color:#fff !important }
+.nav button.on svg{ stroke:#fff !important }
+.glassbtn.done{ background:linear-gradient(135deg,var(--b1),var(--l1),var(--o2)) !important; color:var(--ink) !important }
+button.star.on{ color:#e3a86a !important }
+.pickrow input:checked + .ptile{ box-shadow:0 0 0 2px var(--o2),0 10px 26px rgba(238,176,184,.28) !important }
+.pickrow input:checked + .ptile .pdot{ background:linear-gradient(135deg,var(--l1),var(--o2)) !important }
 </style>
 </head>
 <body data-time="morning">
@@ -541,7 +576,7 @@ button.star.on{color:#f0a060 !important}
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1791103573';
+var BUILD = '1791121355';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['reply','ответил'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
