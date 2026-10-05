@@ -167,6 +167,7 @@ button.star.on{color:#e6a64c;text-shadow:0 0 12px rgba(255,255,255,.95)}
 .sum{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
 .sum .tile b{font-size:26px}
 .stage-tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+@media(min-width:560px){ .stage-tiles{grid-template-columns:repeat(4,1fr)} }
 .stage-tile{background:var(--glass-strong);border:1px solid var(--line);border-radius:18px;padding:14px;cursor:pointer}
 .stage-tile .small{color:var(--ink-soft);margin-bottom:4px}
 .stage-tile b{font-size:24px}
@@ -590,7 +591,7 @@ button.star.on{ color:#e3a86a !important }
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1791197711';
+var BUILD = '1791197936';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
@@ -930,26 +931,12 @@ function stageIdx(k){ return STAGES.map(function(x){ return x[0]; }).indexOf(k);
 function pagePeople(){
   var t=todayStr(), P=state.people;
   var h='<div class="hero-row"><div><div class="hello">люди</div></div></div>';
-  var reached=STAGES.map(function(st,i){ return P.filter(function(p){ return stageIdx(p.stage)>=i; }).length; });
   var inWork=P.filter(function(p){ return p.stage!=='paid'; });
-  h+='<div class="cols"><div>';
   // этапы — компактные плашки, тап открывает список людей
   h+='<div class="stage-tiles">'+STAGES.map(function(st){
     var cnt=P.filter(function(p){ return p.stage===st[0]; }).length;
     return '<div class="stage-tile" data-a="stageList" data-stage="'+st[0]+'"><div class="small">'+st[1]+'</div><b>'+cnt+'</b></div>';
   }).join('')+'</div>';
-  // движение по дням
-  h+='<div class="card"><h3>движение</h3><div class="mv5"><div></div>'+STAGES.map(function(st){ return '<div class="hd">'+st[1]+'</div>'; }).join('');
-  h+='<div class="small">сегодня</div>'+STAGES.map(function(st){ return '<b>'+stageCount(st[0],t,t)+'</b>'; }).join('');
-  h+='<div class="small">всего</div>'+STAGES.map(function(st){ return '<b>'+stageCount(st[0],'2000-01-01','2099-12-31')+'</b>'; }).join('')+'</div></div>';
-  // воронка
-  h+='<div class="card funnel"><h3>воронка</h3>';
-  var top=Math.max(1,reached[0]);
-  STAGES.forEach(function(st,i){
-    var pc=i===0?'':(reached[i-1]>0?Math.round(reached[i]/reached[i-1]*100)+'% от прошлого':'');
-    h+='<div class="frow"><div>'+st[1]+'</div><div class="fbar"><i style="width:'+(reached[i]/top*100)+'%"></i></div><div class="fnum">'+reached[i]+(pc?'<small>'+pc+'</small>':'')+'</div></div>';
-  });
-  h+='</div>';
   // застряли
   var stuck=inWork.filter(function(p){ var lm=lastMove(p); return lm && diffDays(t,lm)>=5 && !(p.nextDate && p.nextDate>=t); });
   if(stuck.length){
@@ -962,14 +949,13 @@ function pagePeople(){
   if(srcs.length){
     h+='<div class="card"><h3>откуда приходят</h3><div class="srcrow small"><div></div><div>людей</div><div>разговор</div><div>оплат</div></div>';
     srcs.forEach(function(sname){
-      var g=P.filter(function(p){ return p.src===sname; }), talk=g.filter(function(p){ return stageIdx(p.stage)>=2; }).length, paid=g.filter(function(p){ return p.stage==='paid'; });
+      var g=P.filter(function(p){ return p.src===sname; }), talk=g.filter(function(p){ return stageIdx(p.stage)>=1; }).length, paid=g.filter(function(p){ return p.stage==='paid'; });
       h+='<div class="srcrow"><div>'+esc(sname)+'</div><div>'+g.length+'</div><div>'+talk+'</div><div>'+paid.length+(paid.length?' · '+Math.round(paid.reduce(function(x,p){ return x+(+p.amount||0); },0)/1000)+' тыс.':'')+'</div></div>';
     });
     h+='</div>';
   }
   h+='<div class="card"><h3>новый человек</h3><div class="addline" style="margin-top:0"><input type="text" id="pName" placeholder="имя нового человека"><button class="plus" data-a="addPerson" aria-label="добавить">+</button></div>';
   h+='<div class="add-row"><button class="btn ghost" data-a="bulkPeople">добавить списком</button></div></div>';
-  h+='</div></div>';
   return h;
 }
 function stageListModal(stageKey){
