@@ -615,7 +615,7 @@ button.star.on{ color:#e3a86a !important }
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1791218000';
+var BUILD = '1791218235';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
@@ -862,8 +862,8 @@ function pageToday(){
   list.forEach(function(x){
     h+='<div class="task"><button class="check'+(x.done?' on':'')+'" data-a="toggleDay" data-id="'+x.id+'">✓</button><div class="grow'+(x.done?' title-done':'')+'" data-a="editDay" data-id="'+x.id+'" style="cursor:pointer">'+esc(x.title)+'</div><button class="star'+(x.star?' on':'')+'" data-a="starDay" data-id="'+x.id+'" aria-label="ключевая">'+(x.star?'★':'☆')+'</button></div>';
   });
-  var wkd=state.tasks.filter(function(x){ return x.scope==='week' && x.day===vd; });
-  if(wkd.length){ h+='<div class="small" style="margin-top:10px">из недели</div>'; wkd.forEach(function(x){ h+=taskRow(x); }); }
+  var wkd=state.tasks.filter(function(x){ return x.scope==='week' && (x.day===vd || (x.plan&&x.plan[vd]>0)); });
+  wkd.forEach(function(x){ h+=taskRow(x); });
   h+='<div class="addline"><input type="text" id="newDayTask" placeholder="новая задача"><button class="plus" data-a="addDayTask" aria-label="добавить">+</button></div>';
   var prev=dayRead(addDays(vd,-1)), undone=prev.tasks.filter(function(x){ return !x.done; });
   if(undone.length) h+='<div class="add-row"><button class="btn ghost" data-a="carry">перенести невыполненные с '+(vd===t?'вчера':shortDate(addDays(vd,-1)))+' ('+undone.length+')</button></div>';
@@ -1052,20 +1052,36 @@ function bulkModal(){
    function(fd){ var t=todayStr(), n=0; (fd.names||'').split('\n').forEach(function(line){ line=line.trim(); if(!line) return; var parts=line.split(','); var nm=parts[0].trim(); if(!nm) return; state.people.push({id:uid(),name:nm,note:(parts.slice(1).join(',')||'').trim(),stage:'wrote',next:'',nextDate:'',amount:0,src:fd.src||'знакомые',hist:[{stage:'wrote',date:t}]}); n++; }); if(n){ save(); closeModal(); render(); showToast('добавлено '+n); } });
   document.getElementById('mc').addEventListener('click',closeModal);
 }
+function planSum(x){ var s=0; if(x.plan) for(var k in x.plan) s+=x.plan[k]; return s; }
 function weekByDayModal(){
   var mon=state.ui.weekMon||mondayOf(todayStr()), wt=state.tasks.filter(function(x){ return x.scope==='week' && x.week===mon; });
   var cols='<div class="week-by-day">';
   for(var i=0;i<7;i++){
-    var d=addDays(mon,i), list=wt.filter(function(x){ return x.day===d; });
-    cols+='<div class="wbd-col" data-day-zone data-day="'+d+'"><div class="wbd-hd"><b>'+WD[i]+'</b><span class="small">'+pd(d).getDate()+'</span></div>'+(list.length?list.map(function(x){ return '<div class="wbd-task" data-id="'+x.id+'" style="'+(x.done?'text-decoration:line-through;opacity:.55':'')+'">'+esc(x.title)+'</div>'; }).join(''):'')+'</div>';
+    var d=addDays(mon,i), list=wt.filter(function(x){ return x.day===d || (x.plan&&x.plan[d]>0); });
+    cols+='<div class="wbd-col" data-day-zone data-day="'+d+'"><div class="wbd-hd"><b>'+WD[i]+'</b><span class="small">'+pd(d).getDate()+'</span></div>'+(list.length?list.map(function(x){ var q=(x.plan&&x.plan[d])?' · '+x.plan[d]:''; return '<div class="wbd-task" data-id="'+x.id+'" style="'+(x.done?'text-decoration:line-through;opacity:.55':'')+'">'+esc(x.title)+q+'</div>'; }).join(''):'')+'</div>';
   }
   cols+='</div>';
-  var nd=wt.filter(function(x){ return !x.day; });
+  var nd=wt.filter(function(x){ return !x.day && !planSum(x); });
   cols+='<div class="wbd-nd" data-day-zone data-day=""><span class="small">без дня</span>'+(nd.length?nd.map(function(x){ return '<div class="wbd-task" data-id="'+x.id+'" style="margin-top:4px">'+esc(x.title)+'</div>'; }).join(''):'')+'</div>';
-  openModal('<h3>по дням</h3><div class="small" style="margin:-6px 0 8px">перетащи задачу на нужный день</div>'+cols+'<button type="button" class="btn ghost" id="mc" style="width:100%">закрыть</button>',function(){});
+  openModal('<h3>по дням</h3><div class="small" style="margin:-6px 0 8px">перетащи задачу на нужный день, количественные — тапни, чтобы распределить</div>'+cols+'<button type="button" class="btn ghost" id="mc" style="width:100%">закрыть</button>',function(){});
   document.getElementById('modal').querySelector('.modal').classList.add('modal-wbd');
   document.getElementById('mc').addEventListener('click',closeModal);
   wireWeekDrag();
+}
+function taskPlanModal(x){
+  var mon=x.week||mondayOf(todayStr());
+  if(x.day){ delete x.day; save(); }
+  if(!x.plan) x.plan={};
+  function rowsHTML(){
+    var r='';
+    for(var i=0;i<7;i++){
+      var d=addDays(mon,i), q=x.plan[d]||0;
+      r+='<div class="row" style="margin-bottom:8px" data-day="'+d+'"><div class="grow">'+WD[i]+' <span class="small">'+pd(d).getDate()+'</span></div><button type="button" class="mini" data-a="planDec">−</button><span class="small pq" style="min-width:20px;text-align:center;display:inline-block">'+q+'</span><button type="button" class="mini" data-a="planInc">+</button></div>';
+    }
+    return r;
+  }
+  openModal('<h3>'+esc(x.title)+'</h3><div class="small" id="planSum">распределено '+planSum(x)+' из '+x.target+'</div><div id="planRows" data-task-id="'+x.id+'" style="margin-top:10px">'+rowsHTML()+'</div><button type="button" class="btn ghost" id="mc" style="width:100%">готово</button>',function(){});
+  document.getElementById('mc').addEventListener('click',function(){ closeModal(); weekByDayModal(); });
 }
 function wireWeekDrag(){
   var root=document.getElementById('modal'); if(!root) return;
@@ -1106,6 +1122,12 @@ function wireWeekDrag(){
     drag=null; clone=null; curOver=null; moved=false;
   }
   root.querySelectorAll('.wbd-task').forEach(function(el){
+    var tid=el.getAttribute('data-id'), t=state.tasks.filter(function(q){ return q.id===tid; })[0];
+    if(t&&t.target>0){
+      el.addEventListener('pointerdown',function(e){ e.preventDefault(); });
+      el.addEventListener('click',function(){ taskPlanModal(t); });
+      return;
+    }
     el.addEventListener('pointerdown',function(e){
       e.preventDefault();
       drag={id:el.getAttribute('data-id'),el:el}; startX=e.clientX; startY=e.clientY; moved=false;
@@ -1182,6 +1204,20 @@ document.addEventListener('click',function(e){
   if(/^(toggleDay|toggleTask|toggleItem|taskInc|habPlus)$/.test(a)) buzz(14); else if(a==='finishDay') buzz([18,50,30]);
   if(a==='pickStage'){ var seg=el.closest('.stage-seg'); if(!seg) return; var inp2=seg.querySelector('input[type=hidden]'); if(inp2) inp2.value=el.getAttribute('data-v'); Array.prototype.forEach.call(seg.querySelectorAll('.stage-seg-btn'),function(b){ b.classList.toggle('on',b===el); }); return; }
   if(a==='weekByDay'){ weekByDayModal(); return; }
+  if(a==='planInc'||a==='planDec'){
+    var wrap=el.closest('#planRows'); if(!wrap) return;
+    var tid2=wrap.getAttribute('data-task-id'), t2=state.tasks.filter(function(q){ return q.id===tid2; })[0]; if(!t2) return;
+    var prow=el.closest('[data-day]'); if(!prow) return;
+    var pd2=prow.getAttribute('data-day');
+    if(!t2.plan) t2.plan={};
+    var cur2=t2.plan[pd2]||0;
+    if(a==='planInc'){ if(planSum(t2)<t2.target){ t2.plan[pd2]=cur2+1; } }
+    else { if(cur2>0){ t2.plan[pd2]=cur2-1; if(!t2.plan[pd2]) delete t2.plan[pd2]; } }
+    save();
+    var pq=prow.querySelector('.pq'); if(pq) pq.textContent=t2.plan[pd2]||0;
+    var psum=document.getElementById('planSum'); if(psum) psum.textContent='распределено '+planSum(t2)+' из '+t2.target;
+    return;
+  }
   if(a==='srcToggle'){ var sp=el.closest('.src-pick'); if(!sp) return; var lst=sp.querySelector('.src-list'); if(lst.hasAttribute('hidden')) lst.removeAttribute('hidden'); else lst.setAttribute('hidden',''); return; }
   if(a==='srcPick'){ var sp2=el.closest('.src-pick'); if(!sp2) return; var inp3=sp2.querySelector('input[type=hidden]'), btn3=sp2.querySelector('.dpbtn'), v3=el.getAttribute('data-v'); if(inp3) inp3.value=v3; if(btn3) btn3.textContent=v3; Array.prototype.forEach.call(sp2.querySelectorAll('.src-opt'),function(b){ b.classList.toggle('on',b===el); }); sp2.querySelector('.src-list').setAttribute('hidden',''); return; }
   if(a==='dpToggle'||a==='dpPrev'||a==='dpNext'||a==='dpPick'||a==='dpClear'){
