@@ -595,6 +595,9 @@ button.star.on{ color:#e3a86a !important }
 .nav button:active,.nav button:focus,.nav button:focus-visible{background:transparent !important;background-color:transparent !important;box-shadow:none !important;outline:none !important;}
 .nav button span{position:static !important;width:auto !important;height:auto !important;overflow:visible !important;clip:auto !important;white-space:nowrap !important;font-size:10.5px;font-weight:600;}
 .nav button .nav-ic{display:flex !important;align-items:center;justify-content:center;width:52px;height:32px;border-radius:10px;background:transparent;color:var(--ink-soft);transition:background .2s ease,color .2s ease;overflow:hidden;}
+.nav button{position:relative !important}
+.nav-badge{position:absolute;top:-2px;right:9px;min-width:15px;height:15px;padding:0 4px;border-radius:8px;background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;font-size:10px;font-weight:700;display:none;align-items:center;justify-content:center;line-height:1;box-shadow:0 0 0 2px #fbf0ef;z-index:1}
+.nav-badge.show{display:flex}
 .nav button svg{display:block !important;width:22px !important;height:22px !important;background:none !important;border-radius:0 !important;padding:0 !important;color:inherit;}
 .nav button.on{color:var(--ink) !important;}
 .nav button.on span{font-weight:700;}
@@ -609,13 +612,13 @@ button.star.on{ color:#e3a86a !important }
   <button data-a="nav" data-p="month" aria-label="месяц" title="месяц"><span class="nav-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg></span><span>месяц</span></button>
   <button data-a="nav" data-p="week" aria-label="неделя" title="неделя"><span class="nav-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="13" width="3.6" height="7.5" rx="1.8" fill="currentColor" fill-opacity=".3"/><rect x="10.2" y="6.3" width="3.6" height="14.2" rx="1.8" fill="currentColor"/><rect x="15.9" y="10.3" width="3.6" height="10.2" rx="1.8" fill="currentColor" fill-opacity=".3"/></svg></span><span>неделя</span></button>
   <button data-a="nav" data-p="today" aria-label="сегодня" title="сегодня"><span class="nav-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2" fill="currentColor" fill-opacity=".3"/><circle cx="12" cy="12" r="5.6" fill="currentColor" fill-opacity=".55"/><circle cx="12" cy="12" r="2.4" fill="currentColor"/></svg></span><span>сегодня</span></button>
-  <button data-a="nav" data-p="people" aria-label="люди" title="люди"><span class="nav-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8.4" r="3.7" fill="currentColor"/><path d="M3 19.6c.5-4 3-6.2 6-6.2s5.5 2.2 6 6.2" fill="currentColor"/><circle cx="17.3" cy="9.6" r="2.8" fill="currentColor" fill-opacity=".35"/><path d="M12.7 19.6c.4-3.1 2.4-4.9 4.4-4.9 2.3 0 4.2 1.9 4.6 4.9" fill="currentColor" fill-opacity=".35"/></svg></span><span>люди</span></button>
+  <button data-a="nav" data-p="people" aria-label="люди" title="люди"><span class="nav-badge" id="peopleBadge"></span><span class="nav-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8.4" r="3.7" fill="currentColor"/><path d="M3 19.6c.5-4 3-6.2 6-6.2s5.5 2.2 6 6.2" fill="currentColor"/><circle cx="17.3" cy="9.6" r="2.8" fill="currentColor" fill-opacity=".35"/><path d="M12.7 19.6c.4-3.1 2.4-4.9 4.4-4.9 2.3 0 4.2 1.9 4.6 4.9" fill="currentColor" fill-opacity=".35"/></svg></span><span>люди</span></button>
 </nav>
 <script>
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1791218421';
+var BUILD = '1791218639';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
@@ -929,7 +932,10 @@ function pageWeek(){
   var h='<div class="hero-row" style="justify-content:center;margin-bottom:22px"><div class="datebar"><button class="chev" data-a="wk" data-d="-7" aria-label="прошлая неделя"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><div style="text-align:center;min-width:170px"><div class="hello" data-a="wk" data-d="0" style="cursor:pointer;text-align:center">неделя</div><div class="hello-date" style="text-align:center;margin-top:2px">'+a.getDate()+' '+MONTHS_GEN[a.getMonth()]+' — '+b.getDate()+' '+MONTHS_GEN[b.getMonth()]+'</div></div><button class="chev" data-a="wk" data-d="7" aria-label="следующая неделя"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg></button></div></div>';
   h+='<div class="cols"><div>';
   var wt=state.tasks.filter(function(x){ return x.scope==='week' && x.week===mon; });
-  h+='<div class="card"><div class="row cardhead"><h3 class="grow">задачи недели</h3>'+(wt.length?'<span class="small" data-a="weekByDay" style="cursor:pointer;text-decoration:underline">по дням</span>':'')+'</div>';
+  var wtsum=0; wt.forEach(function(x){ wtsum+= x.target>0 ? Math.min(1,(x.count||0)/x.target) : (x.done?1:0); });
+  var wtp=wt.length?Math.round(wtsum/wt.length*100):0;
+  h+='<div class="card"><div class="row cardhead"><h3 class="grow">задачи недели</h3>'+(wt.length?'<span class="small">'+wtp+'%</span>':'')+(wt.length?'<span class="small" data-a="weekByDay" style="cursor:pointer;text-decoration:underline;margin-left:10px">по дням</span>':'')+'</div>';
+  if(wt.length) h+='<div class="bar" style="margin-bottom:6px"><i style="width:'+wtp+'%"></i></div>';
   if(!wt.length) h+='<div class="empty">пока пусто, добавь первую</div>';
   wt.forEach(function(x){ h+=taskRow(x); });
   h+='<div class="addline"><input type="text" id="newWeekTask" placeholder="новая задача на неделю"><input type="number" id="newWeekTarget" class="qty" inputmode="numeric" placeholder="×" aria-label="сколько раз"><button class="plus" data-a="addWeekTask" aria-label="добавить">+</button></div></div>';
@@ -945,6 +951,15 @@ function pageWeek(){
   return h;
 }
 function stageIdx(k){ return STAGES.map(function(x){ return x[0]; }).indexOf(k); }
+function peopleNeedCount(){
+  var t=todayStr();
+  return state.people.filter(function(p){
+    if(p.stage==='paid') return false;
+    if(p.nextDate && p.nextDate<=t) return true;
+    var lm=lastMove(p);
+    return lm && diffDays(t,lm)>=5 && !(p.nextDate && p.nextDate>=t);
+  }).length;
+}
 function pagePeople(){
   var t=todayStr(), P=state.people;
   var h='<div class="hero-row"><div><div class="hello">люди</div></div></div>';
@@ -1182,6 +1197,7 @@ function render(){
   app.className=pg==='people'?'wide':'';
   app.innerHTML=pg==='month'?pageMonth():pg==='week'?pageWeek():pg==='people'?pagePeople():pageToday();
   Array.prototype.forEach.call(document.querySelectorAll('#nav button'),function(b){ b.classList.toggle('on',b.getAttribute('data-p')===pg); });
+  var pb=document.getElementById('peopleBadge'); if(pb){ var pc=peopleNeedCount(); pb.textContent=pc>9?'9+':pc; pb.classList.toggle('show',pc>0); }
   var y=window.__keepY; if(typeof y==='number'){ window.scrollTo(0,y); window.__keepY=null; }
   afterRender();
 }
