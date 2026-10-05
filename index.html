@@ -562,10 +562,11 @@ button.star.on{ color:#e3a86a !important }
 .nav{background:rgba(255,253,249,.88) !important;border:1px solid rgba(255,255,255,.85) !important;box-shadow:0 14px 32px rgba(120,100,170,.20) !important;padding:7px 8px !important;gap:2px !important;border-radius:22px !important;}
 .nav button,.nav button.on{width:auto !important;height:auto !important;min-width:58px;border-radius:16px !important;padding:4px 4px 5px !important;flex-direction:column !important;gap:4px;background:transparent !important;box-shadow:none !important;color:var(--ink-soft) !important;}
 .nav button span{position:static !important;width:auto !important;height:auto !important;overflow:visible !important;clip:auto !important;white-space:nowrap !important;font-size:10.5px;font-weight:600;}
-.nav button svg{display:block !important;width:22px !important;height:22px !important;box-sizing:content-box !important;padding:5px 11px !important;border-radius:13px !important;color:var(--ink-soft);transition:background .2s ease,color .2s ease;}
+.nav button .nav-ic{display:flex !important;align-items:center;justify-content:center;width:44px;height:32px;border-radius:13px;background:transparent;color:var(--ink-soft);transition:background .2s ease,color .2s ease;overflow:hidden;}
+.nav button svg{display:block !important;width:22px !important;height:22px !important;background:none !important;border-radius:0 !important;padding:0 !important;color:inherit;}
 .nav button.on{color:var(--ink) !important;}
 .nav button.on span{font-weight:700;}
-.nav button.on svg{background:linear-gradient(135deg,var(--l1),var(--o2)) !important;color:#fff !important;box-shadow:0 6px 16px rgba(185,138,214,.35);}
+.nav button.on .nav-ic{background:linear-gradient(135deg,var(--l1),var(--o2)) !important;color:#fff !important;box-shadow:0 6px 16px rgba(185,138,214,.35);}
 </style>
 </head>
 <body data-time="morning">
@@ -573,16 +574,16 @@ button.star.on{ color:#e3a86a !important }
 <div id="app"><noscript>чтобы платформа открылась, нужно включить javascript в браузере</noscript></div>
 <div class="topbar"><div class="sync" id="sync"></div></div>
 <nav class="nav" id="nav">
-  <button data-a="nav" data-p="month" aria-label="месяц" title="месяц"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg><span>месяц</span></button>
-  <button data-a="nav" data-p="week" aria-label="неделя" title="неделя"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="13" width="3.6" height="7.5" rx="1.8" fill="currentColor" fill-opacity=".3"/><rect x="10.2" y="6.3" width="3.6" height="14.2" rx="1.8" fill="currentColor"/><rect x="15.9" y="10.3" width="3.6" height="10.2" rx="1.8" fill="currentColor" fill-opacity=".3"/></svg><span>неделя</span></button>
-  <button data-a="nav" data-p="today" aria-label="сегодня" title="сегодня"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2" fill="currentColor" fill-opacity=".3"/><circle cx="12" cy="12" r="5.6" fill="currentColor" fill-opacity=".55"/><circle cx="12" cy="12" r="2.4" fill="currentColor"/></svg><span>сегодня</span></button>
-  <button data-a="nav" data-p="people" aria-label="люди" title="люди"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8.4" r="3.7" fill="currentColor"/><path d="M3 19.6c.5-4 3-6.2 6-6.2s5.5 2.2 6 6.2" fill="currentColor"/><circle cx="17.3" cy="9.6" r="2.8" fill="currentColor" fill-opacity=".35"/><path d="M12.7 19.6c.4-3.1 2.4-4.9 4.4-4.9 2.3 0 4.2 1.9 4.6 4.9" fill="currentColor" fill-opacity=".35"/></svg><span>люди</span></button>
+  <button data-a="nav" data-p="month" aria-label="месяц" title="месяц"><span class="nav-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg></span><span>месяц</span></button>
+  <button data-a="nav" data-p="week" aria-label="неделя" title="неделя"><span class="nav-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="13" width="3.6" height="7.5" rx="1.8" fill="currentColor" fill-opacity=".3"/><rect x="10.2" y="6.3" width="3.6" height="14.2" rx="1.8" fill="currentColor"/><rect x="15.9" y="10.3" width="3.6" height="10.2" rx="1.8" fill="currentColor" fill-opacity=".3"/></svg></span><span>неделя</span></button>
+  <button data-a="nav" data-p="today" aria-label="сегодня" title="сегодня"><span class="nav-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2" fill="currentColor" fill-opacity=".3"/><circle cx="12" cy="12" r="5.6" fill="currentColor" fill-opacity=".55"/><circle cx="12" cy="12" r="2.4" fill="currentColor"/></svg></span><span>сегодня</span></button>
+  <button data-a="nav" data-p="people" aria-label="люди" title="люди"><span class="nav-ic"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8.4" r="3.7" fill="currentColor"/><path d="M3 19.6c.5-4 3-6.2 6-6.2s5.5 2.2 6 6.2" fill="currentColor"/><circle cx="17.3" cy="9.6" r="2.8" fill="currentColor" fill-opacity=".35"/><path d="M12.7 19.6c.4-3.1 2.4-4.9 4.4-4.9 2.3 0 4.2 1.9 4.6 4.9" fill="currentColor" fill-opacity=".35"/></svg></span><span>люди</span></button>
 </nav>
 <script>
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1791194730';
+var BUILD = '1791194873';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['reply','ответил'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
