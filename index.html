@@ -168,6 +168,12 @@ button.star.on{color:#e6a64c;text-shadow:0 0 12px rgba(255,255,255,.95)}
 .sum .tile b{font-size:26px}
 .stage-tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
 @media(min-width:560px){ .stage-tiles{grid-template-columns:repeat(4,1fr)} }
+.person-head{display:flex;align-items:center;gap:14px;margin-bottom:4px}
+.avatar-circle{width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,var(--l1,var(--accent2)),var(--o2,var(--accent)));color:#fff;font-size:22px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.person-name-input{flex:1;border:0 !important;background:transparent !important;font-size:20px !important;font-weight:700;padding:0 !important}
+.stage-seg{display:flex;background:var(--glass-strong);border:1px solid var(--line);border-radius:14px;padding:4px;gap:2px;margin-bottom:4px}
+.stage-seg-btn{flex:1;border:0;background:transparent;border-radius:10px;padding:9px 4px;font-size:12px;color:var(--ink-soft);cursor:pointer;text-align:center}
+.stage-seg-btn.on{background:linear-gradient(135deg,var(--l1,var(--accent2)),var(--o2,var(--accent)));color:#fff;font-weight:700}
 .stage-tile{background:var(--glass-strong);border:1px solid var(--line);border-radius:18px;padding:14px;cursor:pointer}
 .stage-tile .small{color:var(--ink-soft);margin-bottom:4px}
 .stage-tile b{font-size:24px}
@@ -591,7 +597,7 @@ button.star.on{ color:#e3a86a !important }
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1791198056';
+var BUILD = '1791198344';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
@@ -964,6 +970,15 @@ function fmtLong(d){ var x=pd(d); return x.getDate()+' '+MONTHS_GEN[x.getMonth()
 function dpHTML(name,value,clearable){
   return '<div class="dp"><input type="hidden" name="'+name+'" value="'+esc(value||'')+'"><button type="button" class="dpbtn" data-a="dpToggle">'+(value?fmtLong(value):'выбрать дату')+'</button><div class="dpcal" hidden data-clear="'+(clearable?'1':'')+'"></div></div>';
 }
+function stageSegHTML(current){
+  return '<div class="stage-seg"><input type="hidden" name="stage" value="'+esc(current)+'">'+STAGES.map(function(st){
+    return '<button type="button" class="stage-seg-btn'+(st[0]===current?' on':'')+'" data-a="pickStage" data-v="'+st[0]+'">'+st[1]+'</button>';
+  }).join('')+'</div>';
+}
+function avatarHTML(name){
+  var letter=(name||'?').trim().charAt(0).toUpperCase();
+  return '<div class="avatar-circle">'+esc(letter)+'</div>';
+}
 function dpRender(dp,ym){
   var cal=dp.querySelector('.dpcal'), val=dp.querySelector('input').value, t=todayStr();
   var y=+ym.slice(0,4), m=+ym.slice(5,7)-1, off=(new Date(y,m,1).getDay()+6)%7, days=new Date(y,m+1,0).getDate();
@@ -1034,8 +1049,18 @@ function habitModal(hb){
   document.getElementById('md').addEventListener('click',function(){ closeModal(); withUndo('привычка удалена',function(){ tomb(hb.id); state.habits=state.habits.filter(function(q){ return q!==hb; }); for(var d in state.log){ delete state.log[d][hb.id]; } }); render(); });
 }
 function personModal(p){
-  openModal('<h3>человек</h3><input type="text" name="name" placeholder="имя" value="'+esc(p.name)+'" required><input type="text" name="note" placeholder="чем занимается, что нужно" value="'+esc(p.note)+'"><select name="src">'+SOURCES.map(function(x){ return '<option'+(x===p.src?' selected':'')+'>'+esc(x)+'</option>'; }).join('')+'</select><input type="text" name="next" placeholder="следующий шаг" value="'+esc(p.next)+'">'+dpHTML('nextDate',p.nextDate||'',true)+'<input type="number" name="amount" inputmode="decimal" placeholder="сумма проекта, ₽" value="'+(p.amount?esc(p.amount):'')+'"><div class="two"><button type="button" class="btn ghost" id="md">удалить</button><button class="btn primary">сохранить</button></div><button type="button" class="btn ghost" id="mc">отмена</button>',
-   function(fd){ p.name=fd.name; p.note=fd.note; p.src=fd.src||p.src; p.next=fd.next; p.nextDate=fd.nextDate||''; p.amount=parseFloat(fd.amount)||0; save(); closeModal(); render(); });
+  openModal('<div class="person-head">'+avatarHTML(p.name)+'<input type="text" name="name" class="person-name-input" placeholder="имя" value="'+esc(p.name)+'" required></div>'+
+    '<div class="small" style="margin-bottom:8px">этап</div>'+stageSegHTML(p.stage)+
+    '<input type="text" name="note" placeholder="чем занимается, что нужно" value="'+esc(p.note)+'">'+
+    '<select name="src">'+SOURCES.map(function(x){ return '<option'+(x===p.src?' selected':'')+'>'+esc(x)+'</option>'; }).join('')+'</select>'+
+    '<input type="text" name="next" placeholder="следующий шаг" value="'+esc(p.next)+'">'+dpHTML('nextDate',p.nextDate||'',true)+
+    '<input type="number" name="amount" inputmode="decimal" placeholder="сумма проекта, ₽" value="'+(p.amount?esc(p.amount):'')+'">'+
+    '<div class="two"><button type="button" class="btn ghost" id="md">удалить</button><button class="btn primary">сохранить</button></div><button type="button" class="btn ghost" id="mc">отмена</button>',
+   function(fd){
+     p.name=fd.name; p.note=fd.note; p.src=fd.src||p.src; p.next=fd.next; p.nextDate=fd.nextDate||''; p.amount=parseFloat(fd.amount)||0;
+     if(fd.stage && fd.stage!==p.stage){ p.stage=fd.stage; if(!p.hist) p.hist=[]; p.hist.push({stage:p.stage,date:todayStr()}); if(p.stage==='paid'){ save(); closeModal(); render(); payModal(p.name); return; } }
+     save(); closeModal(); render();
+   });
   document.getElementById('mc').addEventListener('click',closeModal);
   document.getElementById('md').addEventListener('click',function(){ closeModal(); withUndo('человек удалён',function(){ tomb(p.id); state.people=state.people.filter(function(q){ return q.id!==p.id; }); }); render(); });
 }
@@ -1076,6 +1101,7 @@ document.addEventListener('click',function(e){
   var el=e.target.closest?e.target.closest('[data-a]'):null; if(!el) return;
   var a=el.getAttribute('data-a'), id=el.getAttribute('data-id'), t=todayStr(), vd=VD();
   if(/^(toggleDay|toggleTask|toggleItem|taskInc|habPlus)$/.test(a)) buzz(14); else if(a==='finishDay') buzz([18,50,30]);
+  if(a==='pickStage'){ var seg=el.closest('.stage-seg'); if(!seg) return; var inp2=seg.querySelector('input[type=hidden]'); if(inp2) inp2.value=el.getAttribute('data-v'); Array.prototype.forEach.call(seg.querySelectorAll('.stage-seg-btn'),function(b){ b.classList.toggle('on',b===el); }); return; }
   if(a==='dpToggle'||a==='dpPrev'||a==='dpNext'||a==='dpPick'||a==='dpClear'){
     var dp=el.closest('.dp'); if(!dp) return; var cal=dp.querySelector('.dpcal'), inp=dp.querySelector('input'), btn=dp.querySelector('.dpbtn');
     if(a==='dpToggle'){ if(cal.hasAttribute('hidden')){ var base=inp.value||todayStr(); dpRender(dp,base.slice(0,7)); cal.removeAttribute('hidden'); } else cal.setAttribute('hidden',''); }
