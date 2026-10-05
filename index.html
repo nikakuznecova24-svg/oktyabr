@@ -618,7 +618,7 @@ button.star.on{ color:#e3a86a !important }
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1791217611';
+var BUILD = '1791217759';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
@@ -1066,7 +1066,7 @@ function weekByDayModal(){
     var d=addDays(mon,i), list=wt.filter(function(x){ return x.day===d; });
     cols+='<div class="wbd-col" data-day-zone data-day="'+d+'"><div class="wbd-hd"><b>'+WD[i]+'</b><span class="small">'+pd(d).getDate()+'</span></div>'+(list.length?list.map(function(x){ return '<div class="wbd-task" data-id="'+x.id+'" style="'+(x.done?'text-decoration:line-through;opacity:.55':'')+'">'+esc(x.title)+'</div>'; }).join(''):'')+'</div>';
   }
-  cols+='</div><div class="small" style="text-align:center;margin-top:4px">← листай, чтобы увидеть сб и вс →</div>';
+  cols+='</div>';
   var nd=wt.filter(function(x){ return !x.day; });
   cols+='<div class="wbd-nd" data-day-zone data-day=""><span class="small">без дня</span>'+(nd.length?nd.map(function(x){ return '<div class="wbd-task" data-id="'+x.id+'" style="margin-top:4px">'+esc(x.title)+'</div>'; }).join(''):'')+'</div>';
   openModal('<h3>по дням</h3><div class="small" style="margin:-6px 0 8px">перетащи задачу на нужный день</div>'+cols+'<button type="button" class="btn ghost" id="mc" style="width:100%">закрыть</button>',function(){});
