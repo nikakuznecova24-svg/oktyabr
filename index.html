@@ -618,7 +618,7 @@ button.star.on{ color:#e3a86a !important }
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1791219312';
+var BUILD = '1791221497';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
@@ -903,8 +903,8 @@ function pageMonth(){
   var h='<div class="hero-row"><div><div class="hello">месяц</div></div></div>';
   var e=earned(), L=state.goal.levels, T=state.goal.target, pct=Math.min(100,e/T*100);
   var tk=state.tasks.filter(function(x){ return x.scope!=='week'; });
-  var tasksP=tasksPct01(tk), habP=overallPct(function(hb){ return habitDone(hb.id,COUNT_FROM,MONTH_END); },function(hb){ return hb.target; })/100, incP=Math.min(1,e/T);
-  var prog=Math.max(0,Math.min(1,(tasksP+habP+incP)/3)), wy=150-150*prog;
+  var tasksP=tasksPct01(tk), incP=Math.min(1,e/T);
+  var prog=incP, wy=150-150*prog;
   var fig='<svg viewBox="0 0 100 150" width="100%" height="100%" aria-hidden="true"><circle cx="50" cy="75" r="46" fill="#cdc9dc" opacity=".7" style="filter:blur(1.5px)"/></svg>';
   var figc='<svg viewBox="0 0 100 150" width="100%" height="100%" aria-hidden="true"><defs><linearGradient id="fg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d6e6ff"/><stop offset="1" stop-color="#8fb3f5"/></linearGradient><clipPath id="wv"><path d="M0 '+(wy+4).toFixed(1)+' Q25 '+(wy-4).toFixed(1)+' 50 '+(wy+4).toFixed(1)+' T100 '+(wy+4).toFixed(1)+' V150 H0Z"/></clipPath></defs><g clip-path="url(#wv)"><circle cx="50" cy="75" r="46" fill="url(#fg2)"/></g><circle class="glowring" cx="50" cy="75" r="46" fill="none" stroke="#bcd6ff" stroke-width="3" opacity="'+(prog*0.85).toFixed(2)+'" style="filter:blur(3px)"/></svg>';
   var nextIdx=-1; L.forEach(function(v,i){ if(nextIdx<0 && e<v) nextIdx=i; });
