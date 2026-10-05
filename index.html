@@ -558,6 +558,15 @@ body{ background:#f9f3ee !important; }
 button.star.on{ color:#e3a86a !important }
 .pickrow input:checked + .ptile{ box-shadow:0 0 0 2px var(--o2),0 10px 26px rgba(238,176,184,.28) !important }
 .pickrow input:checked + .ptile .pdot{ background:linear-gradient(135deg,var(--l1),var(--o2)) !important }
+
+/* ---- v32: меню как в финансовом дневнике — иконка со своей пилюлей + подпись снизу ---- */
+.nav{background:rgba(255,253,249,.88) !important;border:1px solid rgba(255,255,255,.85) !important;box-shadow:0 14px 32px rgba(120,100,170,.20) !important;padding:7px 8px !important;gap:2px !important;border-radius:22px !important;}
+.nav button,.nav button.on{width:auto !important;height:auto !important;min-width:58px;border-radius:16px !important;padding:4px 4px 5px !important;flex-direction:column !important;gap:4px;background:transparent !important;box-shadow:none !important;color:var(--ink-soft) !important;}
+.nav button span{position:static !important;width:auto !important;height:auto !important;overflow:visible !important;clip:auto !important;white-space:nowrap !important;font-size:10.5px;font-weight:600;}
+.nav button svg{display:block !important;width:22px !important;height:22px !important;box-sizing:content-box !important;padding:5px 11px !important;border-radius:13px !important;color:var(--ink-soft);transition:background .2s ease,color .2s ease;}
+.nav button.on{color:var(--ink) !important;}
+.nav button.on span{font-weight:700;}
+.nav button.on svg{background:linear-gradient(135deg,var(--l1),var(--o2)) !important;color:#fff !important;box-shadow:0 6px 16px rgba(185,138,214,.35);}
 </style>
 </head>
 <body data-time="morning">
@@ -566,15 +575,15 @@ button.star.on{ color:#e3a86a !important }
 <div class="topbar"><div class="sync" id="sync"></div></div>
 <nav class="nav" id="nav">
   <button data-a="nav" data-p="month" aria-label="месяц" title="месяц"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg><span>месяц</span></button>
-  <button data-a="nav" data-p="week" aria-label="неделя" title="неделя"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4" width="17" height="16" rx="3"/><path d="M3.5 9h17M9 9v11"/></svg><span>неделя</span></button>
-  <button data-a="nav" data-p="today" aria-label="сегодня" title="сегодня"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M8.2 12.3l2.6 2.6 5-5.4"/></svg><span>сегодня</span></button>
-  <button data-a="nav" data-p="people" aria-label="люди" title="люди"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="9" r="3.2"/><path d="M3.5 19c.6-3.3 3-5 5.5-5s4.9 1.7 5.5 5"/><circle cx="17" cy="10" r="2.4"/><path d="M15.5 14.4c2.4-.4 4.4 1 5 4.1"/></svg><span>люди</span></button>
+  <button data-a="nav" data-p="week" aria-label="неделя" title="неделя"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4.5" y="13" width="3.6" height="7.5" rx="1.8" fill="currentColor" fill-opacity=".3"/><rect x="10.2" y="6.3" width="3.6" height="14.2" rx="1.8" fill="currentColor"/><rect x="15.9" y="10.3" width="3.6" height="10.2" rx="1.8" fill="currentColor" fill-opacity=".3"/></svg><span>неделя</span></button>
+  <button data-a="nav" data-p="today" aria-label="сегодня" title="сегодня"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.2" fill="currentColor" fill-opacity=".3"/><circle cx="12" cy="12" r="5.6" fill="currentColor" fill-opacity=".55"/><circle cx="12" cy="12" r="2.4" fill="currentColor"/></svg><span>сегодня</span></button>
+  <button data-a="nav" data-p="people" aria-label="люди" title="люди"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8.4" r="3.7" fill="currentColor"/><path d="M3 19.6c.5-4 3-6.2 6-6.2s5.5 2.2 6 6.2" fill="currentColor"/><circle cx="17.3" cy="9.6" r="2.8" fill="currentColor" fill-opacity=".35"/><path d="M12.7 19.6c.4-3.1 2.4-4.9 4.4-4.9 2.3 0 4.2 1.9 4.6 4.9" fill="currentColor" fill-opacity=".35"/></svg><span>люди</span></button>
 </nav>
 <script>
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1791130900';
+var BUILD = '1791194491';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['reply','ответил'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
