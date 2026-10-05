@@ -591,7 +591,7 @@ button.star.on{ color:#e3a86a !important }
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1791197936';
+var BUILD = '1791198056';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
@@ -942,16 +942,6 @@ function pagePeople(){
   if(stuck.length){
     h+='<div class="card"><h3>застряли</h3>';
     stuck.forEach(function(p){ h+='<div class="todo-row"><div class="grow"><b style="font-weight:600">'+esc(p.name)+'</b><div class="small">'+STAGES[stageIdx(p.stage)][1]+'</div></div><span class="badge late">'+diffDays(t,lastMove(p))+' дн. без движения</span><button class="btn ghost" data-a="editPerson" data-id="'+p.id+'">шаг</button></div>'; });
-    h+='</div>';
-  }
-  // откуда приходят
-  var srcs=SOURCES.filter(function(sname){ return P.some(function(p){ return p.src===sname; }); });
-  if(srcs.length){
-    h+='<div class="card"><h3>откуда приходят</h3><div class="srcrow small"><div></div><div>людей</div><div>разговор</div><div>оплат</div></div>';
-    srcs.forEach(function(sname){
-      var g=P.filter(function(p){ return p.src===sname; }), talk=g.filter(function(p){ return stageIdx(p.stage)>=1; }).length, paid=g.filter(function(p){ return p.stage==='paid'; });
-      h+='<div class="srcrow"><div>'+esc(sname)+'</div><div>'+g.length+'</div><div>'+talk+'</div><div>'+paid.length+(paid.length?' · '+Math.round(paid.reduce(function(x,p){ return x+(+p.amount||0); },0)/1000)+' тыс.':'')+'</div></div>';
-    });
     h+='</div>';
   }
   h+='<div class="card"><h3>новый человек</h3><div class="addline" style="margin-top:0"><input type="text" id="pName" placeholder="имя нового человека"><button class="plus" data-a="addPerson" aria-label="добавить">+</button></div>';
