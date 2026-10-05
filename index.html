@@ -182,13 +182,13 @@ button.star.on{color:#e6a64c;text-shadow:0 0 12px rgba(255,255,255,.95)}
 .day-seg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:4px}
 .day-seg-btn{border:0;background:var(--glass-strong);border-radius:10px;padding:9px 0;font-size:12.5px;color:var(--ink);cursor:pointer;text-align:center}
 .day-seg-btn.on{background:linear-gradient(135deg,var(--l1,var(--accent2)),var(--o2,var(--accent)));color:#fff;font-weight:700}
-.week-by-day{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.week-by-day{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;user-select:none;-webkit-user-select:none}
 .wbd-col{min-width:0}
 .wbd-hd{display:flex;flex-direction:column;align-items:center;margin-bottom:6px;font-size:11px}
 .wbd-hd b{font-size:12px}
 .wbd-task{font-size:10.5px;color:var(--ink);background:var(--glass-strong);border-radius:8px;padding:4px 5px;margin-bottom:4px;overflow-wrap:anywhere;text-align:center;line-height:1.25;cursor:grab;touch-action:none;user-select:none}
 .wbd-col{min-height:62px;border-radius:10px;transition:background .12s}
-.wbd-nd{border-top:1px solid rgba(90,80,120,.1);padding-top:10px;margin-top:4px;min-height:34px;border-radius:10px;transition:background .12s}
+.wbd-nd{border-top:1px solid rgba(90,80,120,.1);padding-top:10px;margin-top:4px;min-height:34px;border-radius:10px;transition:background .12s;user-select:none;-webkit-user-select:none}
 .wbd-nd .wbd-task{display:inline-block;width:auto;text-align:left;margin-right:4px}
 .wbd-col.wbd-over,.wbd-nd.wbd-over{background:rgba(201,138,158,.16)}
 .stage-tile{background:var(--glass-strong);border:1px solid var(--line);border-radius:18px;padding:14px;cursor:pointer}
@@ -614,7 +614,7 @@ button.star.on{ color:#e3a86a !important }
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1791216448';
+var BUILD = '1791216691';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
@@ -1109,6 +1109,7 @@ function wireWeekDrag(){
   }
   root.querySelectorAll('.wbd-task').forEach(function(el){
     el.addEventListener('pointerdown',function(e){
+      e.preventDefault();
       drag={id:el.getAttribute('data-id'),el:el}; startX=e.clientX; startY=e.clientY; moved=false;
       document.addEventListener('pointermove',onMove);
       document.addEventListener('pointerup',onUp);
