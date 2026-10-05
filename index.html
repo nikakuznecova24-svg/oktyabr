@@ -179,9 +179,6 @@ button.star.on{color:#e6a64c;text-shadow:0 0 12px rgba(255,255,255,.95)}
 .src-list[hidden]{display:none}
 .src-opt{text-align:left;border:0;background:transparent;border-radius:11px;padding:11px 12px;font-size:14px;color:var(--ink);cursor:pointer}
 .src-opt.on{background:var(--glass-strong);font-weight:600}
-.day-seg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:4px}
-.day-seg-btn{border:0;background:var(--glass-strong);border-radius:10px;padding:9px 0;font-size:12.5px;color:var(--ink);cursor:pointer;text-align:center}
-.day-seg-btn.on{background:linear-gradient(135deg,var(--l1,var(--accent2)),var(--o2,var(--accent)));color:#fff;font-weight:700}
 .modal-wbd{max-width:980px!important;padding:30px 32px calc(28px + env(safe-area-inset-bottom))!important}
 .week-by-day{display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x proximity;padding-bottom:4px;user-select:none;-webkit-user-select:none}
 @media(min-width:700px){.week-by-day{gap:16px}}
@@ -618,7 +615,7 @@ button.star.on{ color:#e3a86a !important }
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1791217759';
+var BUILD = '1791217820';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
@@ -1053,12 +1050,6 @@ function bulkModal(){
    function(fd){ var t=todayStr(), n=0; (fd.names||'').split('\n').forEach(function(line){ line=line.trim(); if(!line) return; var parts=line.split(','); var nm=parts[0].trim(); if(!nm) return; state.people.push({id:uid(),name:nm,note:(parts.slice(1).join(',')||'').trim(),stage:'wrote',next:'',nextDate:'',amount:0,src:fd.src||'знакомые',hist:[{stage:'wrote',date:t}]}); n++; }); if(n){ save(); closeModal(); render(); showToast('добавлено '+n); } });
   document.getElementById('mc').addEventListener('click',closeModal);
 }
-function daySegHTML(x){
-  var mon=x.week||mondayOf(todayStr()), cur=x.day||'', html='<div class="day-seg"><input type="hidden" name="day" value="'+esc(cur)+'">';
-  for(var i=0;i<7;i++){ var d=addDays(mon,i); html+='<button type="button" class="day-seg-btn'+(d===cur?' on':'')+'" data-a="pickDay" data-v="'+d+'">'+WD[i]+'</button>'; }
-  html+='<button type="button" class="day-seg-btn'+(cur===''?' on':'')+'" data-a="pickDay" data-v="">нет</button></div>';
-  return html;
-}
 function weekByDayModal(){
   var mon=state.ui.weekMon||mondayOf(todayStr()), wt=state.tasks.filter(function(x){ return x.scope==='week' && x.week===mon; });
   var cols='<div class="week-by-day">';
@@ -1122,9 +1113,9 @@ function wireWeekDrag(){
   });
 }
 function taskModal(x,onDelete){
-  var withTarget=!onDelete, isWeek=x.scope==='week';
-  openModal('<h3>задача</h3><textarea name="title" required>'+esc(x.title)+'</textarea>'+(isWeek?'<div class="small" style="margin-top:2px">день недели</div>'+daySegHTML(x):'')+(withTarget&&x.target>0?'<div class="row"><div class="grow">выполнено <b id="tcount" style="font-weight:500">'+(x.count||0)+' / '+x.target+'</b></div><button type="button" class="mini" data-a="taskInc" data-id="'+x.id+'" data-d="-1" aria-label="минус">−</button><button type="button" class="mini" data-a="taskInc" data-id="'+x.id+'" data-d="1" aria-label="плюс">+</button></div>':'')+(withTarget?'<input type="number" name="target" inputmode="numeric" placeholder="сколько раз (если количественная)" value="'+(x.target>0?esc(x.target):'')+'">':'')+'<div class="two"><button type="button" class="btn ghost" id="md">удалить</button><button class="btn primary">сохранить</button></div><button type="button" class="btn ghost" id="mc">отмена</button>',
-   function(fd){ var v=(fd.title||'').trim(); if(!v) return; x.title=v; if(isWeek){ x.day=fd.day||null; } if(withTarget){ var tg=parseInt(fd.target,10); if(tg>0){ x.target=tg; x.count=Math.min(x.count||0,tg); x.done=x.count>=tg; } else { delete x.target; delete x.count; } } save(); closeModal(); render(); });
+  var withTarget=!onDelete;
+  openModal('<h3>задача</h3><textarea name="title" required>'+esc(x.title)+'</textarea>'+(withTarget&&x.target>0?'<div class="row"><div class="grow">выполнено <b id="tcount" style="font-weight:500">'+(x.count||0)+' / '+x.target+'</b></div><button type="button" class="mini" data-a="taskInc" data-id="'+x.id+'" data-d="-1" aria-label="минус">−</button><button type="button" class="mini" data-a="taskInc" data-id="'+x.id+'" data-d="1" aria-label="плюс">+</button></div>':'')+(withTarget?'<input type="number" name="target" inputmode="numeric" placeholder="сколько раз (если количественная)" value="'+(x.target>0?esc(x.target):'')+'">':'')+'<div class="two"><button type="button" class="btn ghost" id="md">удалить</button><button class="btn primary">сохранить</button></div><button type="button" class="btn ghost" id="mc">отмена</button>',
+   function(fd){ var v=(fd.title||'').trim(); if(!v) return; x.title=v; if(withTarget){ var tg=parseInt(fd.target,10); if(tg>0){ x.target=tg; x.count=Math.min(x.count||0,tg); x.done=x.count>=tg; } else { delete x.target; delete x.count; } } save(); closeModal(); render(); });
   document.getElementById('mc').addEventListener('click',closeModal);
   document.getElementById('md').addEventListener('click',function(){ closeModal(); withUndo('задача удалена',function(){ tomb(x.id); if(onDelete) onDelete(); else state.tasks=state.tasks.filter(function(q){ return q!==x; }); }); render(); });
 }
@@ -1189,7 +1180,6 @@ document.addEventListener('click',function(e){
   if(/^(toggleDay|toggleTask|toggleItem|taskInc|habPlus)$/.test(a)) buzz(14); else if(a==='finishDay') buzz([18,50,30]);
   if(a==='pickStage'){ var seg=el.closest('.stage-seg'); if(!seg) return; var inp2=seg.querySelector('input[type=hidden]'); if(inp2) inp2.value=el.getAttribute('data-v'); Array.prototype.forEach.call(seg.querySelectorAll('.stage-seg-btn'),function(b){ b.classList.toggle('on',b===el); }); return; }
   if(a==='weekByDay'){ weekByDayModal(); return; }
-  if(a==='pickDay'){ var dseg=el.closest('.day-seg'); if(!dseg) return; var dinp=dseg.querySelector('input[type=hidden]'); if(dinp) dinp.value=el.getAttribute('data-v'); Array.prototype.forEach.call(dseg.querySelectorAll('.day-seg-btn'),function(b){ b.classList.toggle('on',b===el); }); return; }
   if(a==='srcToggle'){ var sp=el.closest('.src-pick'); if(!sp) return; var lst=sp.querySelector('.src-list'); if(lst.hasAttribute('hidden')) lst.removeAttribute('hidden'); else lst.setAttribute('hidden',''); return; }
   if(a==='srcPick'){ var sp2=el.closest('.src-pick'); if(!sp2) return; var inp3=sp2.querySelector('input[type=hidden]'), btn3=sp2.querySelector('.dpbtn'), v3=el.getAttribute('data-v'); if(inp3) inp3.value=v3; if(btn3) btn3.textContent=v3; Array.prototype.forEach.call(sp2.querySelectorAll('.src-opt'),function(b){ b.classList.toggle('on',b===el); }); sp2.querySelector('.src-list').setAttribute('hidden',''); return; }
   if(a==='dpToggle'||a==='dpPrev'||a==='dpNext'||a==='dpPick'||a==='dpClear'){
