@@ -186,7 +186,11 @@ button.star.on{color:#e6a64c;text-shadow:0 0 12px rgba(255,255,255,.95)}
 .wbd-col{min-width:0}
 .wbd-hd{display:flex;flex-direction:column;align-items:center;margin-bottom:6px;font-size:11px}
 .wbd-hd b{font-size:12px}
-.wbd-task{font-size:10.5px;color:var(--ink);background:var(--glass-strong);border-radius:8px;padding:4px 5px;margin-bottom:4px;overflow-wrap:anywhere;text-align:center;line-height:1.25}
+.wbd-task{font-size:10.5px;color:var(--ink);background:var(--glass-strong);border-radius:8px;padding:4px 5px;margin-bottom:4px;overflow-wrap:anywhere;text-align:center;line-height:1.25;cursor:grab;touch-action:none;user-select:none}
+.wbd-col{min-height:62px;border-radius:10px;transition:background .12s}
+.wbd-nd{border-top:1px solid rgba(90,80,120,.1);padding-top:10px;margin-top:4px;min-height:34px;border-radius:10px;transition:background .12s}
+.wbd-nd .wbd-task{display:inline-block;width:auto;text-align:left;margin-right:4px}
+.wbd-col.wbd-over,.wbd-nd.wbd-over{background:rgba(201,138,158,.16)}
 .stage-tile{background:var(--glass-strong);border:1px solid var(--line);border-radius:18px;padding:14px;cursor:pointer}
 .stage-tile .small{color:var(--ink-soft);margin-bottom:4px}
 .stage-tile b{font-size:24px}
@@ -610,7 +614,7 @@ button.star.on{ color:#e3a86a !important }
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1791216338';
+var BUILD = '1791216448';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
@@ -1056,13 +1060,60 @@ function weekByDayModal(){
   var cols='<div class="week-by-day">';
   for(var i=0;i<7;i++){
     var d=addDays(mon,i), list=wt.filter(function(x){ return x.day===d; });
-    cols+='<div class="wbd-col"><div class="wbd-hd"><b>'+WD[i]+'</b><span class="small">'+pd(d).getDate()+'</span></div>'+(list.length?list.map(function(x){ return '<div class="wbd-task" style="'+(x.done?'text-decoration:line-through;opacity:.55':'')+'">'+esc(x.title)+'</div>'; }).join(''):'')+'</div>';
+    cols+='<div class="wbd-col" data-day-zone data-day="'+d+'"><div class="wbd-hd"><b>'+WD[i]+'</b><span class="small">'+pd(d).getDate()+'</span></div>'+(list.length?list.map(function(x){ return '<div class="wbd-task" data-id="'+x.id+'" style="'+(x.done?'text-decoration:line-through;opacity:.55':'')+'">'+esc(x.title)+'</div>'; }).join(''):'')+'</div>';
   }
   cols+='</div>';
   var nd=wt.filter(function(x){ return !x.day; });
-  if(nd.length) cols+='<div style="border-top:1px solid rgba(90,80,120,.1);padding-top:10px;margin-top:4px"><span class="small">без дня</span>'+nd.map(function(x){ return '<div class="small" style="margin-top:4px">'+esc(x.title)+'</div>'; }).join('')+'</div>';
-  openModal('<h3>по дням</h3>'+cols+'<button type="button" class="btn ghost" id="mc" style="width:100%">закрыть</button>',function(){});
+  cols+='<div class="wbd-nd" data-day-zone data-day=""><span class="small">без дня</span>'+(nd.length?nd.map(function(x){ return '<div class="wbd-task" data-id="'+x.id+'" style="margin-top:4px">'+esc(x.title)+'</div>'; }).join(''):'')+'</div>';
+  openModal('<h3>по дням</h3><div class="small" style="margin:-6px 0 8px">перетащи задачу на нужный день</div>'+cols+'<button type="button" class="btn ghost" id="mc" style="width:100%">закрыть</button>',function(){});
   document.getElementById('mc').addEventListener('click',closeModal);
+  wireWeekDrag();
+}
+function wireWeekDrag(){
+  var root=document.getElementById('modal'); if(!root) return;
+  var drag=null, clone=null, startX=0, startY=0, moved=false, curOver=null;
+  function onMove(e){
+    if(!drag) return;
+    var dx=e.clientX-startX, dy=e.clientY-startY;
+    if(!moved && (Math.abs(dx)>6||Math.abs(dy)>6)){
+      moved=true;
+      clone=drag.el.cloneNode(true);
+      clone.style.position='fixed'; clone.style.zIndex='9999'; clone.style.pointerEvents='none';
+      clone.style.width=drag.el.offsetWidth+'px'; clone.style.opacity='.92'; clone.style.boxShadow='0 6px 18px rgba(0,0,0,.18)';
+      document.body.appendChild(clone);
+      drag.el.style.opacity='.3';
+    }
+    if(moved&&clone){
+      clone.style.left=(e.clientX-clone.offsetWidth/2)+'px';
+      clone.style.top=(e.clientY-clone.offsetHeight/2)+'px';
+      var under=document.elementFromPoint(e.clientX,e.clientY);
+      var zone=under&&under.closest('[data-day-zone]');
+      if(zone!==curOver){ if(curOver) curOver.classList.remove('wbd-over'); if(zone) zone.classList.add('wbd-over'); curOver=zone; }
+    }
+  }
+  function onUp(e){
+    document.removeEventListener('pointermove',onMove);
+    document.removeEventListener('pointerup',onUp);
+    if(moved){
+      if(curOver){
+        var day=curOver.getAttribute('data-day')||null;
+        var t=state.tasks.find(function(q){ return q.id===drag.id; });
+        if(t&&t.day!==day){ t.day=day; save(); }
+      }
+      if(clone&&clone.parentNode) clone.parentNode.removeChild(clone);
+      weekByDayModal();
+      return;
+    }
+    if(drag) drag.el.style.opacity='';
+    drag=null; clone=null; curOver=null; moved=false;
+  }
+  root.querySelectorAll('.wbd-task').forEach(function(el){
+    el.addEventListener('pointerdown',function(e){
+      drag={id:el.getAttribute('data-id'),el:el}; startX=e.clientX; startY=e.clientY; moved=false;
+      document.addEventListener('pointermove',onMove);
+      document.addEventListener('pointerup',onUp);
+    });
+  });
 }
 function taskModal(x,onDelete){
   var withTarget=!onDelete, isWeek=x.scope==='week';
