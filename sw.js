@@ -1,5 +1,5 @@
-// открывается сразу из кэша и обновляется в фоне; новая версия подхватывается через version.json
-var CACHE = 'oktyabr-v4';
+// HTML-страница — сеть в приоритете (чтобы обновления реально подхватывались), статика — из кэша мгновенно, офлайн работает через fallback на кэш
+var CACHE = 'oktyabr-v5';
 var SHELL = ['./', 'manifest.webmanifest', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png', 'fonts/lato-light.woff2', 'fonts/lato-bold.woff2'];
 self.addEventListener('install', function (e) {
   self.skipWaiting();
@@ -16,6 +16,18 @@ self.addEventListener('fetch', function (e) {
   var u = new URL(r.url);
   if (u.origin !== location.origin) return;
   if (u.pathname.indexOf('version.json') !== -1) return;
+  var isNav = r.mode === 'navigate' || (r.headers.get('accept') || '').indexOf('text/html') !== -1;
+  if (isNav) {
+    e.respondWith(
+      fetch(r, { cache: 'no-store' }).then(function (res) {
+        if (res && res.ok) { caches.open(CACHE).then(function (c) { c.put(r, res.clone()); }); }
+        return res;
+      }).catch(function () {
+        return caches.open(CACHE).then(function (c) { return c.match(r, { ignoreSearch: true }).then(function (hit) { return hit || c.match('./'); }); });
+      })
+    );
+    return;
+  }
   e.respondWith(caches.open(CACHE).then(function (c) {
     return c.match(r, { ignoreSearch: true }).then(function (hit) {
       var net = fetch(r, { cache: 'no-store' }).then(function (res) {
