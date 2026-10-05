@@ -166,6 +166,10 @@ button.star.on{color:#e6a64c;text-shadow:0 0 12px rgba(255,255,255,.95)}
 .funnel .fnum small{display:block;color:var(--ink-soft);font-size:11px}
 .sum{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
 .sum .tile b{font-size:26px}
+.stage-tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stage-tile{background:var(--glass-strong);border:1px solid var(--line);border-radius:18px;padding:14px;cursor:pointer}
+.stage-tile .small{color:var(--ink-soft);margin-bottom:4px}
+.stage-tile b{font-size:24px}
 .badge{display:inline-block;border-radius:999px;padding:2px 10px;font-size:12px;background:rgba(255,255,255,.7);color:var(--ink-soft)}
 .badge.today{background:#fde6c4;color:#8a5a12}
 .badge.late{background:#fbd5da;color:#9a2b3d}
@@ -273,7 +277,7 @@ button.star{min-width:36px;min-height:36px}
 #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(88px + env(safe-area-inset-bottom));z-index:30;background:rgba(47,42,69,.94);color:#fff;border-radius:999px;padding:10px 12px 10px 18px;display:flex;gap:12px;align-items:center;font-size:14px;box-shadow:0 10px 30px rgba(47,42,69,.35);max-width:92vw}
 #toast button{border:0;background:rgba(255,255,255,.18);color:#fff;border-radius:999px;padding:6px 14px;font-size:14px}
 @media(min-width:900px){ #toast{bottom:30px} }
-.mv5{display:grid;grid-template-columns:56px repeat(5,minmax(0,1fr));gap:4px;align-items:center;font-size:13px}
+.mv5{display:grid;grid-template-columns:56px repeat(4,minmax(0,1fr));gap:4px;align-items:center;font-size:13px}
 .mv5 .hd{color:var(--ink-soft);text-align:center;font-size:11px !important;overflow-wrap:break-word;line-height:1.15}
 .mv5 b{font-weight:600;text-align:center;font-size:18px}
 .srcrow{display:grid;grid-template-columns:1fr auto auto auto;gap:10px;font-size:14px;margin-bottom:8px;align-items:center}
@@ -537,7 +541,7 @@ body{ background:#f9f3ee !important; }
 .aura i{ filter:blur(70px); opacity:.65 }
 .aura::after{ opacity:.10 }
 
-.card,.tile,.task,.person,.ptile,.col,.daybadge,.modal,.glassbtn,.nav button,.dpcal{ background:#fffdfa !important; }
+.card,.tile,.task,.person,.ptile,.col,.daybadge,.modal,.glassbtn,.nav button,.dpcal,.stage-tile{ background:#fffdfa !important; }
 .card{ border-radius:28px !important; padding:22px 20px 18px !important; box-shadow:0 16px 40px rgba(90,60,70,.07) !important; border:0 !important }
 .task,.ptile,.person{ box-shadow:0 8px 22px rgba(90,60,70,.06) !important }
 
@@ -586,10 +590,10 @@ button.star.on{ color:#e3a86a !important }
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1791196505';
+var BUILD = '1791197711';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
-var STAGES = [['wrote','написала'],['reply','ответил'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
+var STAGES = [['wrote','написала'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
 var QUOTES = ['сегодня достаточно сделать главное','маленький честный шаг тоже шаг','ты уже делаешь больше, чем кажется',
  'ключевое сначала, остальное потом','спокойно, плотно, с радостью','«нет» это данные, а не приговор','ясная голова и тёплое сердце',
  'сначала сообщение, потом чай','каждый разговор ближе к следующему «да»','возможно всё, а делаем по одному шагу',
@@ -924,16 +928,20 @@ function pageWeek(){
 }
 function stageIdx(k){ return STAGES.map(function(x){ return x[0]; }).indexOf(k); }
 function pagePeople(){
-  var t=todayStr(), P=state.people, mon=mondayOf(t), end=addDays(mon,6);
+  var t=todayStr(), P=state.people;
   var h='<div class="hero-row"><div><div class="hello">люди</div></div></div>';
   var reached=STAGES.map(function(st,i){ return P.filter(function(p){ return stageIdx(p.stage)>=i; }).length; });
-  var inWork=P.filter(function(p){ return p.stage!=='paid'; }), pot=inWork.reduce(function(sum,p){ return sum+(+p.amount||0); },0);
-  h+='<div class="sum"><div class="tile"><div class="lbl">людей</div><b>'+P.length+'</b></div><div class="tile"><div class="lbl">в работе</div><b>'+inWork.length+'</b></div><div class="tile"><div class="lbl">потенциал</div><b>'+(pot?Math.round(pot/1000)+' тыс.':'0')+'</b></div></div>';
+  var inWork=P.filter(function(p){ return p.stage!=='paid'; });
   h+='<div class="cols"><div>';
+  // этапы — компактные плашки, тап открывает список людей
+  h+='<div class="stage-tiles">'+STAGES.map(function(st){
+    var cnt=P.filter(function(p){ return p.stage===st[0]; }).length;
+    return '<div class="stage-tile" data-a="stageList" data-stage="'+st[0]+'"><div class="small">'+st[1]+'</div><b>'+cnt+'</b></div>';
+  }).join('')+'</div>';
   // движение по дням
   h+='<div class="card"><h3>движение</h3><div class="mv5"><div></div>'+STAGES.map(function(st){ return '<div class="hd">'+st[1]+'</div>'; }).join('');
   h+='<div class="small">сегодня</div>'+STAGES.map(function(st){ return '<b>'+stageCount(st[0],t,t)+'</b>'; }).join('');
-  h+='<div class="small">неделя</div>'+STAGES.map(function(st){ return '<b>'+stageCount(st[0],mon,end)+'</b>'; }).join('')+'</div></div>';
+  h+='<div class="small">всего</div>'+STAGES.map(function(st){ return '<b>'+stageCount(st[0],'2000-01-01','2099-12-31')+'</b>'; }).join('')+'</div></div>';
   // воронка
   h+='<div class="card funnel"><h3>воронка</h3>';
   var top=Math.max(1,reached[0]);
@@ -961,20 +969,17 @@ function pagePeople(){
   }
   h+='<div class="card"><h3>новый человек</h3><div class="addline" style="margin-top:0"><input type="text" id="pName" placeholder="имя нового человека"><button class="plus" data-a="addPerson" aria-label="добавить">+</button></div>';
   h+='<div class="add-row"><button class="btn ghost" data-a="bulkPeople">добавить списком</button></div></div>';
-  h+='</div><div>';
-  STAGES.forEach(function(st,si){
-    var list=P.filter(function(p){ return p.stage===st[0]; });
-    h+='<div class="card"><h3>'+st[1]+' · '+list.length+'</h3>';
-    if(!list.length) h+='<div class="empty">пусто</div>';
-    list.forEach(function(p){
-      var late=p.nextDate?diffDays(t,p.nextDate):-1, cls=(p.stage!=='paid'&&p.nextDate)?(late>0?' late':(late===0?' today':'')):'';
-      h+='<div class="person'+cls+'"><b>'+esc(p.name)+'</b>'+(p.src?' <span class="stage-tag">· '+esc(p.src)+'</span>':'')+(p.note?'<div class="small">'+esc(p.note)+'</div>':'')+(p.next?'<div class="small" style="margin-top:4px">дальше: '+esc(p.next)+(p.nextDate?' · '+esc(p.nextDate.split('-').reverse().slice(0,2).join('.')):'')+'</div>':'')+(p.amount?'<div class="small">сумма '+money(p.amount)+'</div>':'');
-      h+='<div class="acts">'+(si>0?'<button class="btn ghost" data-a="mv" data-id="'+p.id+'" data-d="-1" aria-label="назад">←</button>':'')+(si<STAGES.length-1?'<button class="btn ghost" data-a="mv" data-id="'+p.id+'" data-d="1" aria-label="дальше">→</button>':'')+'<button class="btn ghost" data-a="editPerson" data-id="'+p.id+'">изменить</button></div></div>';
-    });
-    h+='</div>';
-  });
   h+='</div></div>';
   return h;
+}
+function stageListModal(stageKey){
+  var t=todayStr(), st=STAGES[stageIdx(stageKey)], list=state.people.filter(function(p){ return p.stage===stageKey; });
+  var rows=list.length?list.map(function(p){
+    var late=p.nextDate?diffDays(t,p.nextDate):-1, badge=(p.nextDate&&late>0)?'<span class="badge late">просрочено</span>':(p.nextDate&&late===0?'<span class="badge today">сегодня</span>':'');
+    return '<div class="todo-row" data-a="editPerson" data-id="'+p.id+'" style="cursor:pointer"><div class="grow"><b style="font-weight:600">'+esc(p.name)+'</b>'+(p.next?'<div class="small">'+esc(p.next)+(p.nextDate?' · '+esc(p.nextDate.split('-').reverse().slice(0,2).join('.')):'')+'</div>':'')+'</div>'+badge+'</div>';
+  }).join('') : '<div class="empty">пусто</div>';
+  openModal('<h3>'+st[1]+' · '+list.length+'</h3>'+rows+'<button type="button" class="btn ghost" id="mc" style="width:100%;margin-top:6px">закрыть</button>',function(){});
+  document.getElementById('mc').addEventListener('click',closeModal);
 }
 
 /* ---------- модалка ---------- */
@@ -1148,6 +1153,7 @@ document.addEventListener('click',function(e){
   if(a==='bulkPeople'){ bulkModal(); return; }
   if(a==='mv'){ var p=person(); if(!p) return; var idx=stageIdx(p.stage)+(+el.getAttribute('data-d')); if(idx<0||idx>=STAGES.length) return; p.stage=STAGES[idx][0]; if(!p.hist) p.hist=[]; p.hist.push({stage:p.stage,date:t}); save(); rerender(); if(p.stage==='paid') payModal(p.name); return; }
   if(a==='editPerson'){ var pe=person(); if(pe) personModal(pe); return; }
+  if(a==='stageList'){ stageListModal(el.getAttribute('data-stage')); return; }
   if(a==='delPerson'){ withUndo('человек удалён',function(){ tomb(id); state.people=state.people.filter(function(q){ return q.id!==id; }); }); rerender(); return; }
 });
 function toggleFinish(){
