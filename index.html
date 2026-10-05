@@ -174,6 +174,11 @@ button.star.on{color:#e6a64c;text-shadow:0 0 12px rgba(255,255,255,.95)}
 .stage-seg{display:flex;background:var(--glass-strong);border:1px solid var(--line);border-radius:14px;padding:4px;gap:2px;margin-bottom:4px}
 .stage-seg-btn{flex:1;border:0;background:transparent;border-radius:10px;padding:9px 4px;font-size:12px;color:var(--ink-soft);cursor:pointer;text-align:center}
 .stage-seg-btn.on{background:linear-gradient(135deg,var(--l1,var(--accent2)),var(--o2,var(--accent)));color:#fff;font-weight:700}
+.src-pick{position:relative}
+.src-list{margin-top:8px;background:#fff;border-radius:16px;padding:6px;box-shadow:0 10px 28px rgba(120,100,170,.18);border:1px solid rgba(150,130,200,.15);display:flex;flex-direction:column}
+.src-list[hidden]{display:none}
+.src-opt{text-align:left;border:0;background:transparent;border-radius:11px;padding:11px 12px;font-size:14px;color:var(--ink);cursor:pointer}
+.src-opt.on{background:var(--glass-strong);font-weight:600}
 .stage-tile{background:var(--glass-strong);border:1px solid var(--line);border-radius:18px;padding:14px;cursor:pointer}
 .stage-tile .small{color:var(--ink-soft);margin-bottom:4px}
 .stage-tile b{font-size:24px}
@@ -597,7 +602,7 @@ button.star.on{ color:#e3a86a !important }
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1791198344';
+var BUILD = '1791198552';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
@@ -979,6 +984,12 @@ function avatarHTML(name){
   var letter=(name||'?').trim().charAt(0).toUpperCase();
   return '<div class="avatar-circle">'+esc(letter)+'</div>';
 }
+function srcHTML(current){
+  var cur=current||SOURCES[0];
+  return '<div class="src-pick"><input type="hidden" name="src" value="'+esc(cur)+'"><button type="button" class="dpbtn" data-a="srcToggle">'+esc(cur)+'</button><div class="src-list" hidden>'+SOURCES.map(function(x){
+    return '<button type="button" class="src-opt'+(x===cur?' on':'')+'" data-a="srcPick" data-v="'+esc(x)+'">'+esc(x)+'</button>';
+  }).join('')+'</div></div>';
+}
 function dpRender(dp,ym){
   var cal=dp.querySelector('.dpcal'), val=dp.querySelector('input').value, t=todayStr();
   var y=+ym.slice(0,4), m=+ym.slice(5,7)-1, off=(new Date(y,m,1).getDay()+6)%7, days=new Date(y,m+1,0).getDate();
@@ -1031,7 +1042,7 @@ function payEditModal(p){
   document.getElementById('md').addEventListener('click',function(){ closeModal(); withUndo('оплата удалена',function(){ tomb(p.id); state.payments=state.payments.filter(function(q){ return q.id!==p.id; }); }); render(); });
 }
 function bulkModal(){
-  openModal('<h3>добавить списком</h3><textarea name="names" style="min-height:160px" placeholder="по одному имени на строку. можно добавить через запятую, чем занимается: аня, психолог"></textarea><select name="src">'+SOURCES.map(function(x){ return '<option>'+esc(x)+'</option>'; }).join('')+'</select><div class="two"><button type="button" class="btn ghost" id="mc">отмена</button><button class="btn primary">добавить</button></div>',
+  openModal('<h3>добавить списком</h3><textarea name="names" style="min-height:160px" placeholder="по одному имени на строку. можно добавить через запятую, чем занимается: аня, психолог"></textarea>'+srcHTML(SOURCES[0])+'<div class="two"><button type="button" class="btn ghost" id="mc">отмена</button><button class="btn primary">добавить</button></div>',
    function(fd){ var t=todayStr(), n=0; (fd.names||'').split('\n').forEach(function(line){ line=line.trim(); if(!line) return; var parts=line.split(','); var nm=parts[0].trim(); if(!nm) return; state.people.push({id:uid(),name:nm,note:(parts.slice(1).join(',')||'').trim(),stage:'wrote',next:'',nextDate:'',amount:0,src:fd.src||'знакомые',hist:[{stage:'wrote',date:t}]}); n++; }); if(n){ save(); closeModal(); render(); showToast('добавлено '+n); } });
   document.getElementById('mc').addEventListener('click',closeModal);
 }
@@ -1052,7 +1063,7 @@ function personModal(p){
   openModal('<div class="person-head">'+avatarHTML(p.name)+'<input type="text" name="name" class="person-name-input" placeholder="имя" value="'+esc(p.name)+'" required></div>'+
     '<div class="small" style="margin-bottom:8px">этап</div>'+stageSegHTML(p.stage)+
     '<input type="text" name="note" placeholder="чем занимается, что нужно" value="'+esc(p.note)+'">'+
-    '<select name="src">'+SOURCES.map(function(x){ return '<option'+(x===p.src?' selected':'')+'>'+esc(x)+'</option>'; }).join('')+'</select>'+
+    srcHTML(p.src)+
     '<input type="text" name="next" placeholder="следующий шаг" value="'+esc(p.next)+'">'+dpHTML('nextDate',p.nextDate||'',true)+
     '<input type="number" name="amount" inputmode="decimal" placeholder="сумма проекта, ₽" value="'+(p.amount?esc(p.amount):'')+'">'+
     '<div class="two"><button type="button" class="btn ghost" id="md">удалить</button><button class="btn primary">сохранить</button></div><button type="button" class="btn ghost" id="mc">отмена</button>',
@@ -1102,6 +1113,8 @@ document.addEventListener('click',function(e){
   var a=el.getAttribute('data-a'), id=el.getAttribute('data-id'), t=todayStr(), vd=VD();
   if(/^(toggleDay|toggleTask|toggleItem|taskInc|habPlus)$/.test(a)) buzz(14); else if(a==='finishDay') buzz([18,50,30]);
   if(a==='pickStage'){ var seg=el.closest('.stage-seg'); if(!seg) return; var inp2=seg.querySelector('input[type=hidden]'); if(inp2) inp2.value=el.getAttribute('data-v'); Array.prototype.forEach.call(seg.querySelectorAll('.stage-seg-btn'),function(b){ b.classList.toggle('on',b===el); }); return; }
+  if(a==='srcToggle'){ var sp=el.closest('.src-pick'); if(!sp) return; var lst=sp.querySelector('.src-list'); if(lst.hasAttribute('hidden')) lst.removeAttribute('hidden'); else lst.setAttribute('hidden',''); return; }
+  if(a==='srcPick'){ var sp2=el.closest('.src-pick'); if(!sp2) return; var inp3=sp2.querySelector('input[type=hidden]'), btn3=sp2.querySelector('.dpbtn'), v3=el.getAttribute('data-v'); if(inp3) inp3.value=v3; if(btn3) btn3.textContent=v3; Array.prototype.forEach.call(sp2.querySelectorAll('.src-opt'),function(b){ b.classList.toggle('on',b===el); }); sp2.querySelector('.src-list').setAttribute('hidden',''); return; }
   if(a==='dpToggle'||a==='dpPrev'||a==='dpNext'||a==='dpPick'||a==='dpClear'){
     var dp=el.closest('.dp'); if(!dp) return; var cal=dp.querySelector('.dpcal'), inp=dp.querySelector('input'), btn=dp.querySelector('.dpbtn');
     if(a==='dpToggle'){ if(cal.hasAttribute('hidden')){ var base=inp.value||todayStr(); dpRender(dp,base.slice(0,7)); cal.removeAttribute('hidden'); } else cal.setAttribute('hidden',''); }
