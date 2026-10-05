@@ -586,7 +586,7 @@ button.star.on{ color:#e3a86a !important }
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1791196299';
+var BUILD = '1791196505';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['reply','ответил'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
@@ -941,17 +941,6 @@ function pagePeople(){
     var pc=i===0?'':(reached[i-1]>0?Math.round(reached[i]/reached[i-1]*100)+'% от прошлого':'');
     h+='<div class="frow"><div>'+st[1]+'</div><div class="fbar"><i style="width:'+(reached[i]/top*100)+'%"></i></div><div class="fnum">'+reached[i]+(pc?'<small>'+pc+'</small>':'')+'</div></div>';
   });
-  h+='</div>';
-  // что сделать сегодня
-  var due=inWork.filter(function(p){ return p.nextDate && p.nextDate<=t; }).sort(function(a2,b2){ return a2.nextDate<b2.nextDate?-1:1; });
-  h+='<div class="card"><h3>что сделать сегодня</h3>';
-  if(!due.length) h+='<div class="empty">шагов на сегодня нет</div>';
-  due.forEach(function(p){
-    var late=diffDays(t,p.nextDate);
-    h+='<div class="todo-row"><div class="grow"><b style="font-weight:600">'+esc(p.name)+'</b><div class="small">'+esc(p.next||'следующий шаг')+'</div></div><span class="badge '+(late>0?'late':'today')+'">'+(late>0?('просрочено '+late+' дн.'):'сегодня')+'</span><button class="btn ghost" data-a="doneStep" data-id="'+p.id+'">сделано</button></div>';
-  });
-  var nostep=inWork.filter(function(p){ return !p.next && !p.nextDate; });
-  if(nostep.length) h+='<div class="small" style="margin-top:8px">без следующего шага: '+nostep.map(function(p){ return esc(p.name); }).join(', ')+'</div>';
   h+='</div>';
   // застряли
   var stuck=inWork.filter(function(p){ var lm=lastMove(p); return lm && diffDays(t,lm)>=5 && !(p.nextDate && p.nextDate>=t); });
