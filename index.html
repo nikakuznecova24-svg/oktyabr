@@ -615,7 +615,7 @@ button.star.on{ color:#e3a86a !important }
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1791217820';
+var BUILD = '1791218000';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
@@ -862,6 +862,8 @@ function pageToday(){
   list.forEach(function(x){
     h+='<div class="task"><button class="check'+(x.done?' on':'')+'" data-a="toggleDay" data-id="'+x.id+'">✓</button><div class="grow'+(x.done?' title-done':'')+'" data-a="editDay" data-id="'+x.id+'" style="cursor:pointer">'+esc(x.title)+'</div><button class="star'+(x.star?' on':'')+'" data-a="starDay" data-id="'+x.id+'" aria-label="ключевая">'+(x.star?'★':'☆')+'</button></div>';
   });
+  var wkd=state.tasks.filter(function(x){ return x.scope==='week' && x.day===vd; });
+  if(wkd.length){ h+='<div class="small" style="margin-top:10px">из недели</div>'; wkd.forEach(function(x){ h+=taskRow(x); }); }
   h+='<div class="addline"><input type="text" id="newDayTask" placeholder="новая задача"><button class="plus" data-a="addDayTask" aria-label="добавить">+</button></div>';
   var prev=dayRead(addDays(vd,-1)), undone=prev.tasks.filter(function(x){ return !x.done; });
   if(undone.length) h+='<div class="add-row"><button class="btn ghost" data-a="carry">перенести невыполненные с '+(vd===t?'вчера':shortDate(addDays(vd,-1)))+' ('+undone.length+')</button></div>';
