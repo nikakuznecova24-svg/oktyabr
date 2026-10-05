@@ -605,7 +605,7 @@ button.star.on{ color:#e3a86a !important }
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1791215518';
+var BUILD = '1791216007';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
@@ -920,7 +920,7 @@ function pageWeek(){
   h+='</div>';
   h+='<div class="cols"><div>';
   var wt=state.tasks.filter(function(x){ return x.scope==='week' && x.week===mon; });
-  h+='<div class="card"><h3>задачи недели</h3>';
+  h+='<div class="card"><div class="row cardhead"><h3 class="grow">задачи недели</h3>'+(wt.length?'<span class="small" data-a="weekByDay" style="cursor:pointer;text-decoration:underline">по дням</span>':'')+'</div>';
   if(!wt.length) h+='<div class="empty">пока пусто, добавь первую</div>';
   wt.forEach(function(x){ h+=taskRow(x); });
   h+='<div class="addline"><input type="text" id="newWeekTask" placeholder="новая задача на неделю"><input type="number" id="newWeekTarget" class="qty" inputmode="numeric" placeholder="×" aria-label="сколько раз"><button class="plus" data-a="addWeekTask" aria-label="добавить">+</button></div></div>';
@@ -1049,6 +1049,18 @@ function daySegHTML(x){
   html+='<button type="button" class="day-seg-btn'+(cur===''?' on':'')+'" data-a="pickDay" data-v="">нет</button></div>';
   return html;
 }
+function weekByDayModal(){
+  var mon=state.ui.weekMon||mondayOf(todayStr()), wt=state.tasks.filter(function(x){ return x.scope==='week' && x.week===mon; });
+  var rows='';
+  for(var i=0;i<7;i++){
+    var d=addDays(mon,i), list=wt.filter(function(x){ return x.day===d; });
+    rows+='<div class="row" style="align-items:flex-start;margin-bottom:10px"><div style="width:52px;flex-shrink:0"><b>'+WD[i]+'</b> <span class="small">'+pd(d).getDate()+'</span></div><div class="grow">'+(list.length?list.map(function(x){ return '<div class="small" style="'+(x.done?'text-decoration:line-through;opacity:.55':'')+'">'+esc(x.title)+'</div>'; }).join(''):'<span class="small" style="opacity:.5">—</span>')+'</div></div>';
+  }
+  var nd=wt.filter(function(x){ return !x.day; });
+  if(nd.length) rows+='<div class="row" style="align-items:flex-start;border-top:1px solid rgba(90,80,120,.1);padding-top:10px"><div style="width:52px;flex-shrink:0"><span class="small">без дня</span></div><div class="grow">'+nd.map(function(x){ return '<div class="small">'+esc(x.title)+'</div>'; }).join('')+'</div></div>';
+  openModal('<h3>по дням</h3>'+rows+'<button type="button" class="btn ghost" id="mc" style="width:100%">закрыть</button>',function(){});
+  document.getElementById('mc').addEventListener('click',closeModal);
+}
 function taskModal(x,onDelete){
   var withTarget=!onDelete, isWeek=x.scope==='week';
   openModal('<h3>задача</h3><textarea name="title" required>'+esc(x.title)+'</textarea>'+(isWeek?'<div class="small" style="margin-top:2px">день недели</div>'+daySegHTML(x):'')+(withTarget&&x.target>0?'<div class="row"><div class="grow">выполнено <b id="tcount" style="font-weight:500">'+(x.count||0)+' / '+x.target+'</b></div><button type="button" class="mini" data-a="taskInc" data-id="'+x.id+'" data-d="-1" aria-label="минус">−</button><button type="button" class="mini" data-a="taskInc" data-id="'+x.id+'" data-d="1" aria-label="плюс">+</button></div>':'')+(withTarget?'<input type="number" name="target" inputmode="numeric" placeholder="сколько раз (если количественная)" value="'+(x.target>0?esc(x.target):'')+'">':'')+'<div class="two"><button type="button" class="btn ghost" id="md">удалить</button><button class="btn primary">сохранить</button></div><button type="button" class="btn ghost" id="mc">отмена</button>',
@@ -1116,6 +1128,7 @@ document.addEventListener('click',function(e){
   var a=el.getAttribute('data-a'), id=el.getAttribute('data-id'), t=todayStr(), vd=VD();
   if(/^(toggleDay|toggleTask|toggleItem|taskInc|habPlus)$/.test(a)) buzz(14); else if(a==='finishDay') buzz([18,50,30]);
   if(a==='pickStage'){ var seg=el.closest('.stage-seg'); if(!seg) return; var inp2=seg.querySelector('input[type=hidden]'); if(inp2) inp2.value=el.getAttribute('data-v'); Array.prototype.forEach.call(seg.querySelectorAll('.stage-seg-btn'),function(b){ b.classList.toggle('on',b===el); }); return; }
+  if(a==='weekByDay'){ weekByDayModal(); return; }
   if(a==='pickDay'){ var dseg=el.closest('.day-seg'); if(!dseg) return; var dinp=dseg.querySelector('input[type=hidden]'); if(dinp) dinp.value=el.getAttribute('data-v'); Array.prototype.forEach.call(dseg.querySelectorAll('.day-seg-btn'),function(b){ b.classList.toggle('on',b===el); }); return; }
   if(a==='srcToggle'){ var sp=el.closest('.src-pick'); if(!sp) return; var lst=sp.querySelector('.src-list'); if(lst.hasAttribute('hidden')) lst.removeAttribute('hidden'); else lst.setAttribute('hidden',''); return; }
   if(a==='srcPick'){ var sp2=el.closest('.src-pick'); if(!sp2) return; var inp3=sp2.querySelector('input[type=hidden]'), btn3=sp2.querySelector('.dpbtn'), v3=el.getAttribute('data-v'); if(inp3) inp3.value=v3; if(btn3) btn3.textContent=v3; Array.prototype.forEach.call(sp2.querySelectorAll('.src-opt'),function(b){ b.classList.toggle('on',b===el); }); sp2.querySelector('.src-list').setAttribute('hidden',''); return; }
