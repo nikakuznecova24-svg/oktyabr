@@ -618,7 +618,7 @@ button.star.on{ color:#e3a86a !important }
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1791218639';
+var BUILD = '1791218863';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
@@ -794,6 +794,11 @@ function toggleItem(t,it){
 function overallPct(getDone,getTarget){
   var sd=0, st=0; state.habits.forEach(function(h){ var tg=getTarget(h); sd+=Math.min(getDone(h),tg); st+=tg; }); return st?Math.round(sd/st*100):0;
 }
+function tasksPct01(list){
+  var sd=0, st=0;
+  list.forEach(function(x){ var tg=x.target>0?x.target:1, dn=x.target>0?Math.min(x.count||0,tg):(x.done?1:0); sd+=dn; st+=tg; });
+  return st?sd/st:0;
+}
 function weekTarget(h){ return Math.max(1,Math.round(h.target*7/31)); }
 function habitOf(id){ return state.habits.filter(function(h){ return h.id===id; })[0]; }
 function migrateAll(){
@@ -897,9 +902,8 @@ function pageMonth(){
   var t=todayStr(), tab=state.ui.monthTab||'goals';
   var h='<div class="hero-row"><div><div class="hello">месяц</div></div></div>';
   var e=earned(), L=state.goal.levels, T=state.goal.target, pct=Math.min(100,e/T*100);
-  var tk=state.tasks.filter(function(x){ return x.scope!=='week'; }), tsum=0;
-  tk.forEach(function(x){ tsum+= x.target>0 ? Math.min(1,(x.count||0)/x.target) : (x.done?1:0); });
-  var tasksP=tk.length?tsum/tk.length:0, habP=overallPct(function(hb){ return habitDone(hb.id,COUNT_FROM,MONTH_END); },function(hb){ return hb.target; })/100, incP=Math.min(1,e/T);
+  var tk=state.tasks.filter(function(x){ return x.scope!=='week'; });
+  var tasksP=tasksPct01(tk), habP=overallPct(function(hb){ return habitDone(hb.id,COUNT_FROM,MONTH_END); },function(hb){ return hb.target; })/100, incP=Math.min(1,e/T);
   var prog=Math.max(0,Math.min(1,(tasksP+habP+incP)/3)), wy=150-150*prog;
   var fig='<svg viewBox="0 0 100 150" width="100%" height="100%" aria-hidden="true"><circle cx="50" cy="75" r="46" fill="#cdc9dc" opacity=".7" style="filter:blur(1.5px)"/></svg>';
   var figc='<svg viewBox="0 0 100 150" width="100%" height="100%" aria-hidden="true"><defs><linearGradient id="fg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d6e6ff"/><stop offset="1" stop-color="#8fb3f5"/></linearGradient><clipPath id="wv"><path d="M0 '+(wy+4).toFixed(1)+' Q25 '+(wy-4).toFixed(1)+' 50 '+(wy+4).toFixed(1)+' T100 '+(wy+4).toFixed(1)+' V150 H0Z"/></clipPath></defs><g clip-path="url(#wv)"><circle cx="50" cy="75" r="46" fill="url(#fg2)" style="filter:blur(1.5px)"/></g><circle class="glowring" cx="50" cy="75" r="46" fill="none" stroke="#bcd6ff" stroke-width="3" opacity="'+(prog*0.85).toFixed(2)+'" style="filter:blur(3px)"/></svg>';
@@ -932,8 +936,7 @@ function pageWeek(){
   var h='<div class="hero-row" style="justify-content:center;margin-bottom:22px"><div class="datebar"><button class="chev" data-a="wk" data-d="-7" aria-label="прошлая неделя"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><div style="text-align:center;min-width:170px"><div class="hello" data-a="wk" data-d="0" style="cursor:pointer;text-align:center">неделя</div><div class="hello-date" style="text-align:center;margin-top:2px">'+a.getDate()+' '+MONTHS_GEN[a.getMonth()]+' — '+b.getDate()+' '+MONTHS_GEN[b.getMonth()]+'</div></div><button class="chev" data-a="wk" data-d="7" aria-label="следующая неделя"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg></button></div></div>';
   h+='<div class="cols"><div>';
   var wt=state.tasks.filter(function(x){ return x.scope==='week' && x.week===mon; });
-  var wtsum=0; wt.forEach(function(x){ wtsum+= x.target>0 ? Math.min(1,(x.count||0)/x.target) : (x.done?1:0); });
-  var wtp=wt.length?Math.round(wtsum/wt.length*100):0;
+  var wtp=Math.round(tasksPct01(wt)*100);
   h+='<div class="card"><div class="row cardhead"><h3 class="grow">задачи недели</h3>'+(wt.length?'<span class="small">'+wtp+'%</span>':'')+(wt.length?'<span class="small" data-a="weekByDay" style="cursor:pointer;text-decoration:underline;margin-left:10px">по дням</span>':'')+'</div>';
   if(wt.length) h+='<div class="bar" style="margin-bottom:6px"><i style="width:'+wtp+'%"></i></div>';
   if(!wt.length) h+='<div class="empty">пока пусто, добавь первую</div>';
