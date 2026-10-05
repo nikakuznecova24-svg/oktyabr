@@ -560,7 +560,8 @@ button.star.on{ color:#e3a86a !important }
 
 /* ---- v32: меню как в финансовом дневнике — иконка со своей пилюлей + подпись снизу ---- */
 .nav{background:rgba(255,253,249,.88) !important;border:1px solid rgba(255,255,255,.85) !important;box-shadow:0 14px 32px rgba(120,100,170,.20) !important;padding:7px 8px !important;gap:2px !important;border-radius:22px !important;}
-.nav button,.nav button.on{width:auto !important;height:auto !important;min-width:58px;border-radius:16px !important;padding:4px 4px 5px !important;flex-direction:column !important;gap:4px;background:transparent !important;box-shadow:none !important;color:var(--ink-soft) !important;}
+.nav button,.nav button.on{width:auto !important;height:auto !important;min-width:58px;border-radius:16px !important;padding:4px 4px 5px !important;flex-direction:column !important;gap:4px;background:transparent !important;box-shadow:none !important;outline:none !important;color:var(--ink-soft) !important;}
+.nav button::-moz-focus-inner{border:0;}
 .nav button span{position:static !important;width:auto !important;height:auto !important;overflow:visible !important;clip:auto !important;white-space:nowrap !important;font-size:10.5px;font-weight:600;}
 .nav button .nav-ic{display:flex !important;align-items:center;justify-content:center;width:44px;height:32px;border-radius:13px;background:transparent;color:var(--ink-soft);transition:background .2s ease,color .2s ease;overflow:hidden;}
 .nav button svg{display:block !important;width:22px !important;height:22px !important;background:none !important;border-radius:0 !important;padding:0 !important;color:inherit;}
@@ -583,7 +584,7 @@ button.star.on{ color:#e3a86a !important }
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1791194873';
+var BUILD = '1791195017';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['reply','ответил'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
