@@ -615,7 +615,7 @@ button.star.on{ color:#e3a86a !important }
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1791218235';
+var BUILD = '1791218421';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
@@ -926,7 +926,7 @@ function pageMonth(){
 function pageWeek(){
   var mon=state.ui.weekMon||mondayOf(todayStr());
   var end=addDays(mon,6), a=pd(mon), b=pd(end);
-  var h='<div class="hero-row" style="justify-content:center"><div class="datebar"><button class="chev" data-a="wk" data-d="-7" aria-label="прошлая неделя"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><div style="text-align:center;min-width:170px"><div class="hello" data-a="wk" data-d="0" style="cursor:pointer;text-align:center">неделя</div><div class="hello-date" style="text-align:center;margin-top:2px">'+a.getDate()+' '+MONTHS_GEN[a.getMonth()]+' — '+b.getDate()+' '+MONTHS_GEN[b.getMonth()]+'</div></div><button class="chev" data-a="wk" data-d="7" aria-label="следующая неделя"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg></button></div></div>';
+  var h='<div class="hero-row" style="justify-content:center;margin-bottom:22px"><div class="datebar"><button class="chev" data-a="wk" data-d="-7" aria-label="прошлая неделя"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 5.5L8 12l6.5 6.5"/></svg></button><div style="text-align:center;min-width:170px"><div class="hello" data-a="wk" data-d="0" style="cursor:pointer;text-align:center">неделя</div><div class="hello-date" style="text-align:center;margin-top:2px">'+a.getDate()+' '+MONTHS_GEN[a.getMonth()]+' — '+b.getDate()+' '+MONTHS_GEN[b.getMonth()]+'</div></div><button class="chev" data-a="wk" data-d="7" aria-label="следующая неделя"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9.5 5.5L16 12l-6.5 6.5"/></svg></button></div></div>';
   h+='<div class="cols"><div>';
   var wt=state.tasks.filter(function(x){ return x.scope==='week' && x.week===mon; });
   h+='<div class="card"><div class="row cardhead"><h3 class="grow">задачи недели</h3>'+(wt.length?'<span class="small" data-a="weekByDay" style="cursor:pointer;text-decoration:underline">по дням</span>':'')+'</div>';
