@@ -618,7 +618,7 @@ button.star.on{ color:#e3a86a !important }
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1791472838';
+var BUILD = '1791482326';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
@@ -1156,11 +1156,12 @@ function wireWeekDrag(){
 }
 function taskModal(x,onDelete,dayCtx){
   var withTarget=!onDelete;
-  var unscheduleBtn=dayCtx?'<button type="button" class="btn ghost" id="mu" style="width:100%;margin-top:8px">убрать с этого дня (останется в неделе)</button>':'';
-  openModal('<h3>задача</h3><textarea name="title" required>'+esc(x.title)+'</textarea>'+(withTarget&&x.target>0?'<div class="row"><div class="grow">выполнено <b id="tcount" style="font-weight:500">'+(x.count||0)+' / '+x.target+'</b></div><button type="button" class="mini" data-a="taskInc" data-id="'+x.id+'" data-d="-1" aria-label="минус">−</button><button type="button" class="mini" data-a="taskInc" data-id="'+x.id+'" data-d="1" aria-label="плюс">+</button></div>':'')+(withTarget?'<input type="number" name="target" inputmode="numeric" placeholder="сколько раз (если количественная)" value="'+(x.target>0?esc(x.target):'')+'">':'')+'<div class="two"><button type="button" class="btn ghost" id="md">удалить</button><button class="btn primary">сохранить</button></div>'+unscheduleBtn+'<button type="button" class="btn ghost" id="mc">отмена</button>',
+  var topRow=dayCtx?'<button class="btn primary" style="width:100%">сохранить</button>':'<div class="two"><button type="button" class="btn ghost" id="md">удалить</button><button class="btn primary">сохранить</button></div>';
+  var unscheduleBtn=dayCtx?'<button type="button" class="btn ghost" id="mu" style="width:100%;margin-top:8px">удалить</button>':'';
+  openModal('<h3>задача</h3><textarea name="title" required>'+esc(x.title)+'</textarea>'+(withTarget&&x.target>0?'<div class="row"><div class="grow">выполнено <b id="tcount" style="font-weight:500">'+(x.count||0)+' / '+x.target+'</b></div><button type="button" class="mini" data-a="taskInc" data-id="'+x.id+'" data-d="-1" aria-label="минус">−</button><button type="button" class="mini" data-a="taskInc" data-id="'+x.id+'" data-d="1" aria-label="плюс">+</button></div>':'')+(withTarget?'<input type="number" name="target" inputmode="numeric" placeholder="сколько раз (если количественная)" value="'+(x.target>0?esc(x.target):'')+'">':'')+topRow+unscheduleBtn+'<button type="button" class="btn ghost" id="mc">отмена</button>',
    function(fd){ var v=(fd.title||'').trim(); if(!v) return; x.title=v; if(withTarget){ var tg=parseInt(fd.target,10); if(tg>0){ x.target=tg; x.count=Math.min(x.count||0,tg); x.done=x.count>=tg; } else { delete x.target; delete x.count; } } save(); closeModal(); render(); });
   document.getElementById('mc').addEventListener('click',closeModal);
-  document.getElementById('md').addEventListener('click',function(){ closeModal(); withUndo('задача удалена',function(){ tomb(x.id); if(onDelete) onDelete(); else state.tasks=state.tasks.filter(function(q){ return q!==x; }); }); render(); });
+  if(!dayCtx) document.getElementById('md').addEventListener('click',function(){ closeModal(); withUndo('задача удалена',function(){ tomb(x.id); if(onDelete) onDelete(); else state.tasks=state.tasks.filter(function(q){ return q!==x; }); }); render(); });
   if(dayCtx){ document.getElementById('mu').addEventListener('click',function(){ if(x.day===dayCtx) delete x.day; if(x.plan&&x.plan[dayCtx]) delete x.plan[dayCtx]; save(); closeModal(); render(); }); }
 }
 function habitModal(hb){
