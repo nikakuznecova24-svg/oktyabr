@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#fbf4e8">
 <link rel="preload" href="fonts/lato-light.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="fonts/lato-bold.woff2" as="font" type="font/woff2" crossorigin>
@@ -44,7 +44,7 @@ html{scroll-behavior:smooth}
 body{
   margin:0; font-family:'Onest',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif; font-weight:400; color:var(--ink);
   min-height:100vh; min-height:100dvh; background:linear-gradient(180deg,var(--top) 0%,var(--mid) 55%,var(--bot) 100%) fixed;
-  overflow-x:clip;
+  overflow-x:clip; touch-action:manipulation;
 }
 .sky{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 .moon{position:absolute;top:34px;left:50%;width:74px;height:74px;margin-left:-37px;border-radius:50%;
@@ -618,7 +618,7 @@ button.star.on{ color:#e3a86a !important }
 (function(){
 'use strict';
 var CLOUD = { api:'https://potok-storage.nikakuznecova24.workers.dev', token:'PquJQRe-R5A5_Gxc9r9meDRjKJ7NihHA7X9rzY5dD-c', key:'oktyabr-2026' };
-var BUILD = '1791472708';
+var BUILD = '1791472838';
 var LS = 'oktyabr-2026';
 var MONTH_START = '2026-10-01', MONTH_END = '2026-10-31', START = '2026-10-05', COUNT_FROM = '2026-09-30';
 var STAGES = [['wrote','написала'],['talk','разговор'],['offer','предложение'],['paid','оплата']];
